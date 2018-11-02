@@ -1,0 +1,30 @@
+name: MoneySystemJob
+main: MoneySystemJob\MoneySystemJob
+version: 4.3
+api: 3.2.1
+author: metowa1227
+commands:
+ job:
+  description: MoneySystemJobのマスターコマンドです。
+  usage: /job <join|out|list|me>
+  permission: job.cmd
+permissions:
+ job.cmd.*:
+  description: すべてのMoneySystemJobのコマンドを使用できます。
+  default: op
+children:
+ job.cmd.:
+  description: jobコマンドを使用できます。
+  default: true
+  children:
+ join.cmd.:
+  description: 仕事に就けます。
+  default: true
+ out.cmd.:
+  description: 仕事を辞めます。
+  default: true
+ list.cmd.:
+  description: 仕事の一覧を見ることができます。
+  default: true
+ me.cmd.:
+  description: 自分の仕事を確認します。

@@ -1,0 +1,12 @@
+name: MoneySystem
+main: metowa1227\moneysystem\core\System
+version: 13.13
+api:
+  - 3.2.1
+  - 4.0.0
+author: metowa1227
+description: Lightweight, fast and multifunctional economic system.
+prefix: §aMoneySystem Core§f
+extensions: sqlite3
+website: https://github.com/metowa1227/MoneySystem
+load: STARTUP

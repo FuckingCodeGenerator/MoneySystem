@@ -1,0 +1,7 @@
+## MoneySystem configuration file ##
+## Please absolutely do not change the column marked "!!!" ##
+auto-updatecheck: true
+default-money: 3000
+auto-backup: true
+file-log: false
+unit: $

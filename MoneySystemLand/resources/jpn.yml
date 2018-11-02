@@ -1,0 +1,80 @@
+##MoneySystemland's language databse file.
+
+in-game-only: このコマンドはコンソールから実行できません。
+
+s-saved: 第一ポジションを設定しました。
+e-saved: 第二ポジションを設定しました。
+buy-confirm: 価格は--UNIT----PRICE--です。/landコマンドから土地を購入できます。
+s-not-set: 第一ポジションが設定されていません。
+level-diff: 第一ポジションで設定したワールドと異なります。
+already: この土地は--OWNER--が所有しています。
+
+scope: 土地保護をする範囲を設定してください。
+scope2: 範囲が選択されていません。
+buy-ready: 選択した範囲の土地を--UNIT----PRICE--で購入します。
+buy-cancelled: 土地購入をキャンセルしました。(選択範囲は削除されません。)
+
+bought-land: 土地を購入しました。
+
+disable-levels: このワールドでは土地購入ができません。
+land-limit: 最大保持可能土地数に達しています。
+no-money: 所持金が不足しています。
+
+can-not-edit: "ここああなたの土地ではありません。 所有者: --OWNER-- ID: --ID--"
+need-buy: この土地を編集するには土地を購入してください。
+
+cancel-success: 土地購入をキャンセルしました。
+
+tp-disabled: このサーバーではテレポート機能が有効化されていません。
+tp-select: テレポート先を選択してください。 (緑 = テレポート可能, 赤 = テレポート不可能)
+tp-success: テレポートが完了しました。
+tp-offline: テレポート先の土地がオフラインです。
+tp-id-not-set: テレポート先のIDが入力されていません。
+tp-dest-not-found: テレポート先が見つかりませんでした。
+
+sell-select: 売却する土地を選択してください。 (売却値は表示価格の2/1です)
+sell-ready: "土地(ID: --ID--)を--UNIT----PRICE--で売却します。"
+sell-success: "土地(ID: --ID--)を--UNIT----PRICE--で売却しました。"
+
+no-owner: この土地は誰も所有していません。
+info: "所有者: --OWNER-- ID: --ID-- 購入価格: --UNIT----PRICE--"
+
+give-select: 譲渡する土地を選択してください。
+give-target: 譲渡する相手を入力してください。
+give-id: 譲渡する土地のIDを入力してください。
+give-invite: 譲渡した後に自分を土地共有リストに含める
+give-ready: "土地(ID: --ID--)を--PLAYER--に譲渡します。(土地共有: --INVITE--)"
+give-success: "土地(ID: --ID--)を--PLAYER--に譲渡しました。"
+transfer: 譲渡する
+
+not-owner: この土地はあなたの土地ではありません。
+
+list-title: "あなたの所有している土地:"
+
+invite-select: 土地共有をする土地を選択してください。
+invite-target: 土地を共有する相手を入力してください。
+invite-ready: "土地(ID: --ID--)に--PLAYER--を招待します。"
+invite-success: "土地(ID: --ID--)に--PLAYER--を招待しました。"
+
+invite-remove-select: 土地共有を解除する土地のIDを入力してください。
+invite-remove-target: 土地共有を解除する相手を選択してください。
+unvite-ready: "土地(ID: --ID--)の土地共有リストから--PLAYER--を削除します。"
+invite-remove-success: "土地(ID: --ID--)の土地共有リストから--PLAYER--を削除しました。"
+
+buy: 購入
+continue: 続行
+sale: 売却
+cancel: キャンセル
+close: 閉じる
+select-lang: 言語の選択
+buy-land: 土地の購入
+buy-stop: 土地購入のキャンセル
+select: 選択してください
+teleport: テレポート
+sell: 土地の売却
+give: 土地の譲渡
+"yes": はい
+"no": いいえ
+list: あなたの土地リスト
+invite: 土地を共有する
+invite-remove: 土地共有を解除する

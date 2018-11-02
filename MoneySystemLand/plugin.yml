@@ -1,0 +1,21 @@
+name: MoneySystemLand
+main: metowa1227\MoneySystemLand\MoneySystemLand
+version: NewEdition_0.1.1
+api: 3.2.1
+author: metowa1227
+commands:
+  land:
+    description: MoneySystemLand's master coommand.
+    usage: /land
+  s:
+    description: Set the first position.
+    usage: /s
+  e:
+    description: Set the second position.
+    usage: /e
+  ltp:
+    description: Teleport to the designated land.
+    usage: /ltp <ID>
+  here:
+    description: Examine the land information on the standing place.
+    usage: /here

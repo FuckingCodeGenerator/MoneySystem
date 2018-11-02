@@ -1,0 +1,37 @@
+The MoneySystemLand and Other systems and MoneySystemAPI and other third party MoneySystem's was made by metowa1227. (c) 2018 metowa1227.: true
+
+##Default price per block (The price of the world for which the custom price is not set)
+price: 150
+
+##Price by world (Writing (world name: price))
+customPriceDescription: "Price by world (Writing (world name: price))"
+customPrice: [
+  world: 150,
+  world2: 200
+]
+
+##World where land protection is impossible
+disable-levels:
+ - world3
+ - world4
+ - world5
+
+##The maximum number of land that a player can possess (-1 unlimited)
+limit: 5
+
+##Not checking the world
+free:
+ - world6
+ - world7
+ - world8
+
+##Whether to activate Teleport (true = enable | false = disable)
+teleport: true
+
+##Do not edit this value
+id: 1
+idDescription: "Do not edit this value!"
+
+##Do not edit this value
+counter: 1
+counterDescription: (Very important) Do not edit this value!
