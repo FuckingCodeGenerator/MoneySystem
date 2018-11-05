@@ -1,13 +1,7 @@
 name: MoneySystemShop
-version: 4.3
-api: 3.2.1
+version: 4.41
+api:
+  - 3.2.1
+  - 4.0.0
 main: MoneySystemShop\MoneySystemShop
 author: metowa1227
-commands:
-  id:
-    description: Player hands item check id
-    usage: /id
-    permission: moneysystemshop.command.id
-    permissions:
-    moneysystemshop.command.id:
-      default: true
