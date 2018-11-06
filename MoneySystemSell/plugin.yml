@@ -1,5 +1,7 @@
 name: MoneySystemSell
+version: 4.41
+api:
+  - 3.2.1
+  - 4.0.0
 main: MoneySystemSell\MoneySystemSell
-version: 3.2.1
 author: metowa1227
-api: 3.2.1

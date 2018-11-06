@@ -20,7 +20,7 @@
 *Development Team: metowa 1227 Plugin Development Team (Members: metowa 1227 only)
 */
 
-namespace MoneySystemShop\event;
+namespace MoneySystemSell\event;
 
 use pocketmine\utils\{
 	Config,
@@ -37,8 +37,8 @@ use pocketmine\network\mcpe\protocol\{
 use pocketmine\item\Item;
 
 use metowa1227\moneysystem\api\core\API;
-use MoneySystemShop\{
-	MoneySystemShop as Main,
+use MoneySystemSell\{
+	MoneySystemSell as Main,
 	form\SendForm
 };
 
@@ -60,8 +60,8 @@ class Receive extends SendForm implements Listener
         $formData = json_decode($packet->formData, true);
         $api = API::getInstance();
         switch ($formId) {
-            case $this->formid["OpenShop"]:
-                $shop = Main::$shop[Main::$tmp[$name]];
+            case $this->formid["OpenSell"]:
+                $sell = Main::$sell[Main::$tmp[$name]];
                 if (!isset($formData)) {
                 	unset(Main::$tmp[$name]);
                 	return true;
@@ -70,50 +70,30 @@ class Receive extends SendForm implements Listener
                 if ($count === 0)
                 	return true;
 
-                if (!$player->getInventory()->canAddItem(Item::get($shop["Item"], $shop["Meta"], $count))) {
+                if (!$player->getInventory()->contains(Item::get($sell["Item"], $sell["Meta"])->setCount($count))) {
                     for ($i = 0; $i <= 64; $i++)
                         $item64[] = "" . $i . "";
                     $slider[] = [
                         'type' => "step_slider",
-                        'text' => TextFormat::YELLOW . "\n\nインベントリの容量が不足しています。\n" . TextFormat::RESET . "購入する個数を選択してください。\nアイテム詳細:\n- アイテム名: " . $shop["ItemName"] . "\n- アイテムID: " . $shop["Item"] . " : " . $shop["Meta"] . "\n- 一個あたりの値段: " . $shop["Price"] . "\n個数",
+                        'text' => TextFormat::YELLOW . "\n\nアイテムの個数が不足しています。\n" . TextFormat::RESET . "売却する個数を選択してください。\nアイテム詳細:\n- アイテム名: " . $sell["ItemName"] . "\n- アイテムID: " . $sell["Item"] . " : " . $sell["Meta"] . "\n- 一個あたりの売価: " . $sell["Price"] . "\n個数",
                         'steps' => $item64,
                         'defaultIndex' => "1"
                     ];
                     $data = [
                         "type"    => "custom_form",
-                        "title"   => TextFormat::LIGHT_PURPLE . TextFormat::BOLD . "ShoppingCart",
+                        "title"   => TextFormat::BLUE . TextFormat::BOLD . "SellingItems",
                         "content" => $slider,
                     ];
                     $this->sendForm($player, $data);
                     return true;
                 }
 
-                $money = $api->get($player);
-                $price = $count * $shop["Price"];
-                if ($money < $price) {
-                    $lack = $price - $money;
-                    for ($i = 0; $i <= 64; $i++)
-                        $item64[] = "" . $i . "";
-                    $slider[] = [
-                        'type' => "step_slider",
-                        'text' => TextFormat::YELLOW . "\n\n所持金が不足しています。(" . $api->getUnit() . $lack . ")\n" . TextFormat::RESET . "購入する個数を選択してください。\nアイテム詳細:\n- アイテム名: " . $shop["ItemName"] . "\n- アイテムID: " . $shop["Item"] . " : " . $shop["Meta"] . "\n- 一個あたりの値段: " . $shop["Price"] . "\n個数",
-                        'steps' => $item64,
-                        'defaultIndex' => "1"
-                    ];
-                    $data = [
-                        "type"    => "custom_form",
-                        "title"   => TextFormat::LIGHT_PURPLE . TextFormat::BOLD . "ShoppingCart",
-                        "content" => $slider,
-                    ];
-                    $this->sendForm($player, $data);
-                    return true;
-                }
-
+                $price = $count * $sell["Price"];
                 $data = [
                     "type"    => "modal",
-                    "title"   => TextFormat::LIGHT_PURPLE . TextFormat::BOLD . "ShoppingCart",
-                    "content" => $shop["ItemName"] . "(" . $count . "個)を" . $api->getUnit() . $price . "で購入します。",
-                    "button1" => "購入",
+                    "title"   => TextFormat::BLUE . TextFormat::BOLD . "SellingItems",
+                    "content" => $sell["ItemName"] . "(" . $count . "個)を" . $api->getUnit() . $price . "で売却します。",
+                    "button1" => "売却",
                     "button2" => "キャンセル"
                 ];
                 $this->sendForm($player, $data, true);
@@ -122,16 +102,16 @@ class Receive extends SendForm implements Listener
                 return true;
             	break;
 
-            case $this->formid["BuyConfirm"]:
+            case $this->formid["SellConfirm"]:
                 if (!isset($this->confirm[$name]))
                 	return true;
                 if ($formData) {
-	                $shop = Main::$shop[Main::$tmp[$name]];
+	                $sell = Main::$sell[Main::$tmp[$name]];
 	                $count = $this->count[$name];
-	                $price = $shop["Price"] * $count;
-		            $api->reduce($name, $price);
-	                $player->getInventory()->addItem((new Item($shop["Item"], $shop["Meta"]))->setCount($count));
-	                $player->sendMessage(TextFormat::GREEN . $shop["ItemName"] . "( " . $count . "個 )" . "を" . $api->getUnit() . $price . "で購入しました。");
+	                $price = $sell["Price"] * $count;
+		            $api->increase($name, $price);
+	                $player->getInventory()->removeItem((new Item($sell["Item"], $sell["Meta"]))->setCount($count));
+	                $player->sendMessage(TextFormat::GREEN . $sell["ItemName"] . "( " . $count . "個 )" . "を" . $api->getUnit() . $price . "で売却しました。");
                 }
                 unset($this->confirm[$name], $this->count[$name]);
                 return true;

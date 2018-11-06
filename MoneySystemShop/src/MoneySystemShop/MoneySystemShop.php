@@ -69,13 +69,13 @@ class MoneySystemShop extends PluginBase
             "OpenShop" => mt_rand(1, 555555),
             "BuyConfirm" => mt_rand(555556, 9999999)
         ]))->getAll();
+        $this->unit = $this->api->getUnit();
+        self::$scheduler = $this->getScheduler();
 		$this->getServer()->getPluginManager()->registerEvents(new Receive($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new TouchEvent($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new SignCreation($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new SignBreak(), $this);
         $this->getScheduler()->scheduleRepeatingTask(new SaveTask($this->object_shop, $this), 20 * 60 * 5);
-        $this->unit = $this->api->getUnit();
-        self::$scheduler = $this->getScheduler();
         $this->getServer()->getCommandMap()->register("id", new IDCommand());
         $this->getLogger()->notice(TextFormat::GREEN . "MoneySystemShop has started.");
 	}
