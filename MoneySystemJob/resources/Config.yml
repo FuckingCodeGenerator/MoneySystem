@@ -1,0 +1,2 @@
+#If you disable this, players will not be able to change their professions again once they decide on work.
+Allow-change-job: true
