@@ -86,7 +86,7 @@ class MoneySystemAirport extends PluginBase implements Listener
 		];
 		$event->setLine(0, TextFormat::GREEN . "[AIRPORT]");
 		$event->setLine(1, "行先: " . $to);
-		$event->setLine(2, "価格: " . $price);
+		$event->setLine(2, "価格: " . API::getInstance()->getUnit() . $price);
 		$this->data->set($pos, $data);
 		$this->data->save();
 		$player->sendPopup(TextFormat::GREEN . "空港の作成に成功しました。");
@@ -149,8 +149,12 @@ class MoneySystemAirport extends PluginBase implements Listener
 			$posAll = $all["x"] . " : " . $all["y"] . " : " . $all["z"] . " : " . $all["Level"];
 			if ($pos === $posAll)
 				continue;
+			if ($data["Price"] > API::getInstance()->get($player)) {
+				$player->sendMessage(TextFormat::YELLOW . "所持金が不足しています。");
+				return;
+			}
 			$level = $this->getServer()->getLevelByName($all["Level"]);
-			if (!API::getInstance()->reduce($player, $all["Price"])) {
+			if (!API::getInstance()->reduce($player, $data["Price"])) {
 				$player->sendMessage(TextFormat::RED . "離陸に失敗しました。(不明なエラー)");
 				return;
 			}
