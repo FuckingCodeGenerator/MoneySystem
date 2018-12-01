@@ -1,41 +1,4 @@
 <?php
-
-/*
-*  __  __       _                             __    ___    ___   _______
-* |  \/  | ___ | |_  ___   _    _  ____  _   |  |  / _ \  / _ \ |___   /
-* | |\/| |/ _ \| __|/ _ \ | |  | |/  _ \/ /  |  | |_// / |_// /    /  /
-* | |  | |  __/| |_| (_) || |__| || (_)   |  |  |   / /_   / /_   /  /
-* |_|  |_|\___| \__|\___/ |__/\__||____/\_\  |__|  /____| /____| /__/
-*
-* All this program is made by hand of metowa1227.
-* I certify here that all authorities are in metowa1227.
-* Expiration date of certification: unlimited
-* Secondary distribution etc are prohibited.
-* The update is also done by the developer.
-* This plugin is a developer API plugin to make it easier to write code.
-* When using this plug-in, be sure to specify it somewhere.
-* Warning if violation is confirmed.
-*
-* Developer: metowa1227
-*/
-
-/*
-    Plugin description
-
-    - CONTENTS
-        - Lightweight, fast and multifunctional economic system.
-
-    - AUTHOR
-        - metowa1227 (MoneySystemAPI)
-
-    - DEVELOPMENT ENVIRONMENT
-        - Windows 10 Pro 64bit
-        - Intel(R) Core 2 Duo(TM) E8400 @ 3.00GHz
-        - 8192MB DDR2 SDRAM PC2-5300(667MHz) , PC2-6400(800MHz)
-        - Altay 3.0.6+dev for Minecraft: PE v1.5.0 (protocol version 274)
-        - PHP 7.2.1 64bit supported version
-*/
-
 namespace metowa1227\moneysystem\form;
 
 use pocketmine\Player;
@@ -46,7 +9,6 @@ use pocketmine\network\mcpe\protocol\ModalFormRequestPacket;
 use pocketmine\event\Listener;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
-
 use metowa1227\moneysystem\api\core\API;
 
 class Received implements Listener
@@ -75,148 +37,149 @@ class Received implements Listener
             $formData = json_decode($packet->formData, true);
             switch ($formId) {
                 case $this->id->get("menu"):
-                    if ($formData === 1) {
-                        $content = [
-                            "type" => "input",
-                            "text" => "\n" . $api->getMessage("pay.target") . "\n\n",
-                            "placeholder" => "PlayerName",
-                            "default" => ""
-                        ];
-                        $content2 = [
-                            "type" => "input",
-                            "text" => "\n" . $api->getMessage("pay.amount") . "\n\n",
-                            "placeholder" => "Amount",
-                            "default" => ""
-                        ];
-                        $data[][] = [];
-                        $data["type"] = "custom_form";
-                        $data["title"] = TextFormat::GREEN . "MoneySystem PAY";
-                        $data["content"][] = $content;
-                        $data["content"][] = $content2;
-                        $this->send($player, $data, $this->id->get("pay"));
-                        $this->pay = true;
-                        return true;
-                    } elseif ($formData === 2) {
-                        $content = [
-                            "type" => "input",
-                            "text" => "\n" . $api->getMessage("see.target") . "\n\n",
-                            "placeholder" => "PlayerName",
-                            "default" => ""
-                        ];
-                        $data[][] = [];
-                        $data["type"] = "custom_form";
-                        $data["title"] = TextFormat::GREEN . "MoneySystem SEE";
-                        $data["content"][] = $content;
-                        $this->send($player, $data, $this->id->get("see"));
-                        $this->see = true;
-                        return true;
-                    } elseif ($formData === 3) {
-                        $result = "             ALL ACCOUNT DATA\n\n";
-                        $i = 0;
-                        foreach ($api->getAll() as $data) {
-                            if (!$data)
-                                continue;
-                            $result .= $data["name"] . " | " . $api->getUnit() . $api->get($data["name"]) . "\n";
-                            $i += 1;
-                        }
-                        $content = [
-                            "type" => "label",
-                            "text" => $result
-                        ];
-                        $data["type"] = "custom_form";
-                        $data["title"] = TextFormat::GREEN . "MoneySystem ALL";
-                        $data["content"][] = $content;
-                        $this->send($player, $data, $this->id->get("all"));
-                        return true;
-                    } elseif ($formData === 4) {
-                        $result = "                MONEY RANKING\n\n";
-                        $i = 1;
-                        $all = $api->getAll();
-                        $data[] = "skip";
-                        foreach ($all as $ac) {
-                            $data[$ac["name"]] = $ac["money"];
-                        }
-                        arsort($data);
-                        foreach ($data as $key => $value) {
-                            if ($value === "skip" or Server::getInstance()->isOp($key) or $key === "CONSOLE") continue;
-                            if ($key === $name)
-                                $result .= TextFormat::AQUA . $i . " | " . $name . " >>  " . TextFormat::YELLOW . $api->getUnit() . $value . "\n";
-                            else
-                                $result .= TextFormat::BLACK . $i . " | " . $key . " >>  " . TextFormat::YELLOW . $api->getUnit() . $value . "\n";
-                            $i++;
-                        }
-                        $content = [
-                            "type" => "label",
-                            "text" => $result
-                        ];
-                        $data["type"] = "custom_form";
-                        $data["title"] = TextFormat::GREEN . "MoneySystem RANK";
-                        $data["content"][] = $content;
-                        $this->send($player, $data, $this->id->get("rank"));
-                        return true;
-                    } elseif ($formData === 5) {
-                        $content = [
-                            "type" => "input",
-                            "text" => "\n" . $api->getMessage("increase.target") . "\n\n",
-                            "placeholder" => "PlayerName",
-                            "default" => ""
-                        ];
-                        $content2 = [
-                            "type" => "input",
-                            "text" => "\n" . $api->getMessage("increase.amount") . "\n\n",
-                            "placeholder" => "Amount",
-                            "default" => ""
-                        ];
-                        $data[][] = [];
-                        $data["type"] = "custom_form";
-                        $data["title"] = TextFormat::AQUA . "MoneySystem INCREASE";
-                        $data["content"][] = $content;
-                        $data["content"][] = $content2;
-                        $this->send($player, $data, $this->id->get("increase"));
-                        $this->inc = true;
-                        return true;
-                    } elseif ($formData === 6) {
-                        $content = [
-                            "type" => "input",
-                            "text" => "\n" . $api->getMessage("reduce.target") . "\n\n",
-                            "placeholder" => "PlayerName",
-                            "default" => ""
-                        ];
-                        $content2 = [
-                            "type" => "input",
-                            "text" => "\n" . $api->getMessage("reduce.amount") . "\n\n",
-                            "placeholder" => "Amount",
-                            "default" => ""
-                        ];
-                        $data[][] = [];
-                        $data["type"] = "custom_form";
-                        $data["title"] = TextFormat::AQUA . "MoneySystem REDUCE";
-                        $data["content"][] = $content;
-                        $data["content"][] = $content2;
-                        $this->send($player, $data, $this->id->get("reduce"));
-                        $this->red = true;
-                        return true;
-                    } elseif ($formData === 7) {
-                        $content = [
-                            "type" => "input",
-                            "text" => "\n" . $api->getMessage("set.target") . "\n\n",
-                            "placeholder" => "PlayerName",
-                            "default" => ""
-                        ];
-                        $content2 = [
-                            "type" => "input",
-                            "text" => "\n" . $api->getMessage("set.amount") . "\n\n",
-                            "placeholder" => "Amount",
-                            "default" => ""
-                        ];
-                        $data[][] = [];
-                        $data["type"] = "custom_form";
-                        $data["title"] = TextFormat::AQUA . "MoneySystem SET";
-                        $data["content"][] = $content;
-                        $data["content"][] = $content2;
-                        $this->send($player, $data, $this->id->get("set"));
-                        $this->set = true;
-                        return true;
+                    switch ($formData) {
+                        case 1:
+                            $content = [
+                                "type" => "input",
+                                "text" => "\n" . $api->getMessage("pay.target") . "\n\n",
+                                "placeholder" => "PlayerName",
+                                "default" => ""
+                            ];
+                            $content2 = [
+                                "type" => "input",
+                                "text" => "\n" . $api->getMessage("pay.amount") . "\n\n",
+                                "placeholder" => "Amount",
+                                "default" => ""
+                            ];
+                            $data[][] = [];
+                            $data["type"] = "custom_form";
+                            $data["title"] = TextFormat::GREEN . "MoneySystem PAY";
+                            $data["content"][] = $content;
+                            $data["content"][] = $content2;
+                            $this->send($player, $data, $this->id->get("pay"));
+                            $this->pay = true;
+                            return true;
+                        case 2:
+                            $content = [
+                                "type" => "input",
+                                "text" => "\n" . $api->getMessage("see.target") . "\n\n",
+                                "placeholder" => "PlayerName",
+                                "default" => ""
+                            ];
+                            $data[][] = [];
+                            $data["type"] = "custom_form";
+                            $data["title"] = TextFormat::GREEN . "MoneySystem SEE";
+                            $data["content"][] = $content;
+                            $this->send($player, $data, $this->id->get("see"));
+                            $this->see = true;
+                            return true;
+                        case 3:
+                            $result = "             ALL ACCOUNT DATA\n\n";
+                            $i = 0;
+                            foreach ($api->getAll() as $data) {
+                                if (!$data)
+                                    continue;
+                                $result .= $data["name"] . " | " . $api->getUnit() . $api->get($data["name"]) . "\n";
+                                $i += 1;
+                            }
+                            $content = [
+                                "type" => "label",
+                                "text" => $result
+                            ];
+                            $data["type"] = "custom_form";
+                            $data["title"] = TextFormat::GREEN . "MoneySystem ALL";
+                            $data["content"][] = $content;
+                            $this->send($player, $data, $this->id->get("all"));
+                            return true;
+                        case 4:
+                            $result = "                MONEY RANKING\n\n";
+                            $i = 1;
+                            $all = $api->getAll();
+                            $data[] = "skip";
+                            foreach ($all as $ac) {
+                                $data[$ac["name"]] = $ac["money"];
+                            }
+                            arsort($data);
+                            foreach ($data as $key => $value) {
+                                if ($value === "skip" or Server::getInstance()->isOp($key) or $key === "CONSOLE") continue;
+                                if ($key === $name)
+                                    $result .= TextFormat::AQUA . $i . " | " . $name . " >>  " . TextFormat::YELLOW . $api->getUnit() . $value . "\n";
+                                else
+                                    $result .= TextFormat::BLACK . $i . " | " . $key . " >>  " . TextFormat::YELLOW . $api->getUnit() . $value . "\n";
+                                $i++;
+                            }
+                            $content = [
+                                "type" => "label",
+                                "text" => $result
+                            ];
+                            $data["type"] = "custom_form";
+                            $data["title"] = TextFormat::GREEN . "MoneySystem RANK";
+                            $data["content"][] = $content;
+                            $this->send($player, $data, $this->id->get("rank"));
+                            return true;
+                        case 5:
+                            $content = [
+                                "type" => "input",
+                                "text" => "\n" . $api->getMessage("increase.target") . "\n\n",
+                                "placeholder" => "PlayerName",
+                                "default" => ""
+                            ];
+                            $content2 = [
+                                "type" => "input",
+                                "text" => "\n" . $api->getMessage("increase.amount") . "\n\n",
+                                "placeholder" => "Amount",
+                                "default" => ""
+                            ];
+                            $data[][] = [];
+                            $data["type"] = "custom_form";
+                            $data["title"] = TextFormat::AQUA . "MoneySystem INCREASE";
+                            $data["content"][] = $content;
+                            $data["content"][] = $content2;
+                            $this->send($player, $data, $this->id->get("increase"));
+                            $this->inc = true;
+                            return true;
+                        case 6:
+                            $content = [
+                                "type" => "input",
+                                "text" => "\n" . $api->getMessage("reduce.target") . "\n\n",
+                                "placeholder" => "PlayerName",
+                                "default" => ""
+                            ];
+                            $content2 = [
+                                "type" => "input",
+                                "text" => "\n" . $api->getMessage("reduce.amount") . "\n\n",
+                                "placeholder" => "Amount",
+                                "default" => ""
+                            ];
+                            $data[][] = [];
+                            $data["type"] = "custom_form";
+                            $data["title"] = TextFormat::AQUA . "MoneySystem REDUCE";
+                            $data["content"][] = $content;
+                            $data["content"][] = $content2;
+                            $this->send($player, $data, $this->id->get("reduce"));
+                            $this->red = true;
+                            return true;
+                        case 7:
+                            $content = [
+                                "type" => "input",
+                                "text" => "\n" . $api->getMessage("set.target") . "\n\n",
+                                "placeholder" => "PlayerName",
+                                "default" => ""
+                            ];
+                            $content2 = [
+                                "type" => "input",
+                                "text" => "\n" . $api->getMessage("set.amount") . "\n\n",
+                                "placeholder" => "Amount",
+                                "default" => ""
+                            ];
+                            $data[][] = [];
+                            $data["type"] = "custom_form";
+                            $data["title"] = TextFormat::AQUA . "MoneySystem SET";
+                            $data["content"][] = $content;
+                            $data["content"][] = $content2;
+                            $this->send($player, $data, $this->id->get("set"));
+                            $this->set = true;
+                            return true;
                     }
                     break;
 
