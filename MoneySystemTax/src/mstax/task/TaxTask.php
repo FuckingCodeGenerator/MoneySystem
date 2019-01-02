@@ -21,8 +21,8 @@ class TaxTask extends Task
 	 */
 	public function onRun(int $tick) : void
 	{
-		API::getInstance()->reduce(Server::getInstance()->getOnlinePlayers(), $this->tax);
 		foreach (Server::getInstance()->getOnlinePlayers() as $online) { 
+			API::getInstance()->reduce($online, $this->tax);
 			$online->sendMessage("税金" . API::getInstance()->getUnit() . $this->tax . "を徴収しました。");
 		}
 	}

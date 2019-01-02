@@ -9,7 +9,7 @@ use metowa1227\moneysystem\commands\player\devices\ExpandingForms;
 use metowa1227\moneysystem\form\Received;
 use metowa1227\moneysystem\event\player\JoinEvent;
 
-define("PLUGIN_VERSION", 13.14);
+define("PLUGIN_VERSION", 13.20);
 define("PLUGIN_NAME", "MoneySystem");
 define("PLUGIN_CODE", "xhenom");
 define("MAX_MONEY", 9223372036854775807);
