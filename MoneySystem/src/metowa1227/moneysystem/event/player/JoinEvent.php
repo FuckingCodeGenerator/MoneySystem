@@ -40,20 +40,16 @@ namespace metowa1227\moneysystem\event\player;
 
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
-
 use metowa1227\moneysystem\api\core\API;
 
 class JoinEvent implements Listener
 {
-    public function __construct() {}
-
     public function onJoin(PlayerJoinEvent $event)
     {
-        $api    = API::getInstance();
+        $api = API::getInstance();
         $player = $event->getPlayer();
-        $name   = $player->getName();
-        if (!$api->exists($player))
-            $api->createAccount($player);
+        $name = $player->getName();
+        $api->createAccount($player);
         $cache = $api->hasCache($player);
         if ($cache["cache"] !== 0) {
             $api->increase($player, $cache["cache"]);

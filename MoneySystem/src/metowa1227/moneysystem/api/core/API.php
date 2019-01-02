@@ -8,18 +8,21 @@ use pocketmine\{
     Server,
     Player
 };
-use metowa1227\moneysystem\api\listener\Listener;
-use metowa1227\moneysystem\core\System;
-use metowa1227\moneysystem\database\SQLiteDataManager;
-use metowa1227\moneysystem\event\money\{
-    MoneyChangeEvent,
-    MoneySetEvent,
-    MoneyIncreaseEvent,
-    MoneyReduceEvent,
+use metowa1227\moneysystem\api\listener\{
+    Listener,
+    Types
 };
+use metowa1227\moneysystem\core\System;
+use metowa1227\moneysystem\api\processor\{
+    Processor,
+    GetName,
+    Check
+};
+use metowa1227\moneysystem\database\SQLiteDataManager;
 
-class API implements Listener
+class API extends Processor implements Listener, Types
 {
+    use GetName, Check;
     /**
      * 言語データベース用の色データ
      * Color conversion data of language file
@@ -117,8 +120,9 @@ class API implements Listener
 
     public function getMessage(string $key, array $input = []) : string
     {
-        if (!$this->lang->exists($key))
+        if (!$this->lang->exists($key)) {
             return TextFormat::RED . "The character string \"" . TextFormat::YELLOW . $key . TextFormat::RED . "\" could not be found from the search result database.";
+        }
         $message = str_replace("[EOL]", "\n" . str_pad(" ", 66), $this->lang_all[$key]);
         $message = str_replace("[EOLL]", "\n", $this->lang_all[$key]);
         $colorTag = $this->colorTag;
@@ -160,12 +164,14 @@ class API implements Listener
      *
      * @param bool $key [trueの場合はアカウントごと返す]
      *
-     * @return null | int
+     * @return array
     */
-    public function getAll(bool $key = false)
+    public function getAll(bool $key = false) : array
     {
-        if (!$this->user->getAll())
-            return null;
+        if (!$this->user->getAll()) {
+            return [];
+        }
+
         $result = array();
         if ($key) {
             foreach ($this->user->getAll(true) as $list) {
@@ -202,27 +208,41 @@ class API implements Listener
     }
 
     /**
+     * @param Player | string | array  $player
+     * @param int                      $money
+     * @param string                   $reason
+     * @param string                   $by [caller]
+     *
+     * @return bool
+     */
+    private function processEdit($player, $money, $reason, $by, $type) : bool
+    {
+        if (!is_array($player)) {
+            return $this->process($player, $money, $reason, $by, $type, $this->db);
+        }
+
+        foreach ($player as $players) {
+            if (!$this->process($players, $money, $reason, $by, $type, $this->db)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * プレイヤーの所持金を設定する
      * Set player's money
      *
-     * @param Player | string  $player
-     * @param int              $money
-     * @param string           $reason
-     * @param string           $by [caller]
+     * @param Player | string | array  $player
+     * @param int                      $money
+     * @param string                   $reason
+     * @param string                   $by [caller]
+     *
+     * @return bool
     */
     public function set($player, int $money, string $reason = "none", string $by = "unknown") : bool
     {
-        $this->getName($player);
-        if (!$this->exists($player))
-            return false;
-        Server::getInstance()->getPluginManager()->callEvent($result = new MoneyChangeEvent($this, $player, $money, $reason, $by, self::CHANGED_TYPE_SET));
-        Server::getInstance()->getPluginManager()->callEvent($result2 = new MoneySetEvent($this, $player, $money, $reason, $by));
-        if (!$result->isCancelled() && !$result2->isCancelled()) {
-            $money = $this->check($money);
-            $this->db->file("UPDATE account SET money = $money WHERE name = \"$player\"");
-            return true;
-        }
-        return false;
+        return $this->processEdit($player, $money, $reason, $by, self::TYPE_SET);
     }
 
     /**
@@ -233,23 +253,12 @@ class API implements Listener
      * @param int              $money
      * @param string           $reason
      * @param string           $by [caller]
+     *
+     * @return bool
     */
     public function increase($player, int $money, string $reason = "none", string $by = "unknown") : bool
     {
-        $this->getName($player);
-        if (!$this->exists($player))
-            return false;
-        Server::getInstance()->getPluginManager()->callEvent($result = new MoneyChangeEvent($this, $player, $money, $reason, $by, self::CHANGED_TYPE_INCREASE));
-        Server::getInstance()->getPluginManager()->callEvent($result2 = new MoneyIncreaseEvent($this, $player, $money, $reason, $by));
-        if (!$result->isCancelled() && !$result2->isCancelled()) {
-            $money = $this->check($money);
-            $money = $this->get($player) + $money;
-            if ($money > MAX_MONEY)
-                $money = MAX_MONEY;
-            $this->db->file("UPDATE account SET money = $money WHERE name = \"$player\"");
-            return true;
-        }
-        return false;
+        return $this->processEdit($player, $money, $reason, $by, self::TYPE_INCREASE);
     }
 
     /**
@@ -260,22 +269,12 @@ class API implements Listener
      * @param int              $money
      * @param string           $reason
      * @param string           $by [caller]
+     *
+     * @return bool
     */
     public function reduce($player, int $money, string $reason = "none", string $by = "unknown") : bool
     {
-        $this->getName($player);
-        if (!$this->exists($player))
-            return false;
-        Server::getInstance()->getPluginManager()->callEvent($result = new MoneyChangeEvent($this, $player, $money, $reason, $by, self::CHANGED_TYPE_REDUCE));
-        Server::getInstance()->getPluginManager()->callEvent($result2 = new MoneyReduceEvent($this, $player, $money, $reason, $by));
-        if (!$result->isCancelled() && !$result2->isCancelled()) {
-            $money = $this->check($money);
-            $money = $this->get($player) - $money;
-            $money = $this->check($money);
-            $this->db->file("UPDATE account SET money = $money WHERE name = \"$player\"");
-            return true;
-        }
-        return false;
+        return $this->processEdit($player, $money, $reason, $by, self::TYPE_REDUCE);
     }
 
     /**
@@ -287,16 +286,19 @@ class API implements Listener
     public function backup() : bool
     {
         $dir = $this->system->getDataFolder();
-        if (!is_dir($dir))
+        if (!is_dir($dir)) {
             return false;
-        if (!is_dir(Server::getInstance()->getDataPath() . "MoneySystemBackupFiles"))
+        }
+        if (!is_dir(Server::getInstance()->getDataPath() . "MoneySystemBackupFiles")) {
             @mkdir(Server::getInstance()->getDataPath() . "MoneySystemBackupFiles");
+        }
         @mkdir(Server::getInstance()->getDataPath() . "MoneySystemBackupFiles/" . date("D_M_j-H.i.s-T_Y", time()));
         $path = Server::getInstance()->getDataPath() . "MoneySystemBackupFiles/" . date("D_M_j-H.i.s-T_Y", time());
         $file = $path . "\\Account[Backup].sqlite3";
         try {
-            if (!copy($dir . "Account.sqlite3", $file))
-                throw new \Exception("File backup failed.", 1);
+            if (!copy($dir . "Account.sqlite3", $file)) {
+                throw new \Exception("File backup failed.");
+            }
         } catch (\Exception $error) {
             $this->logger->error("File backup failed. To start the server safely please back up the file manually.");
             return false;
@@ -367,8 +369,9 @@ class API implements Listener
     public function createAccount($player, int $money = -1) : bool
     {
         $this->getName($player);
-        if ($money < 0)
+        if ($money < 0) {
             $money = $this->getDefaultMoney();
+        }
         if (!$this->exists($player)) {
             $this->db->file("INSERT OR REPLACE INTO account VALUES (\"$player\", $money, 0, \"NONE\")");
             $this->user->set($player);
@@ -388,8 +391,9 @@ class API implements Listener
     public function removeAccount($player) : bool
     {
         $this->getName($player);
-        if (!$this->exists($player))
+        if (!$this->exists($player)) {
             return false;
+        }
         $this->db->file("DELETE FROM account WHERE name = \"$player\"");
         $this->user->remove($player);
         $this->user->save(true);
@@ -407,9 +411,7 @@ class API implements Listener
     public function exists($player) : bool
     {
         $this->getName($player);
-        if (empty($this->db->file("SELECT * FROM account WHERE name = \"$player\"")))
-            return false;
-        return true;
+        return $this->user->exists($player);
     }
 
     public function hasCache($player)
@@ -438,15 +440,5 @@ class API implements Listener
         $next2 = ltrim($next2, ", ");
         $this->db->file("UPDATE account SET cache = $next, by = \"$next2\" WHERE name = \"$target\"");
         return true;
-    }
-
-    private function getName(&$player) : void
-    {
-        $player = ($player instanceof Player) ? $player->getName() : $player;
-    }
-
-    private function check($value) : int
-    {
-        return $value <= 0 ? 0 : $value;
     }
 }

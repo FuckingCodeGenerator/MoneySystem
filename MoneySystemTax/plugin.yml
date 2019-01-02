@@ -1,0 +1,4 @@
+name: MoneySystemTax
+main: mstax\MoneySystemTax
+version: 1.0.0
+api: 3

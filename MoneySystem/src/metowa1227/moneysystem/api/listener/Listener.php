@@ -5,9 +5,6 @@ namespace metowa1227\moneysystem\api\listener;
 
 interface Listener
 {
-    const CHANGED_TYPE_INCREASE = 1;
-    const CHANGED_TYPE_REDUCE = 2;
-    const CHANGED_TYPE_SET = 3;
     /**
      *  @param  string  | Player  $player
      *  @param  boolean           $array    If set to true, account data is returned as an array.
@@ -35,30 +32,30 @@ interface Listener
     public function save() : bool;
 
     /**
-     *  @param string | Player  $player  Target player information
-     *  @param integer          $money   Amount to be set
-     *  @param string           $reason  Clear reason set up
-     *  @param string           $by      Practitioner
+     *  @param string | Player | array  $player  Target player information
+     *  @param integer                  $money   Amount to be set
+     *  @param string                   $reason  Clear reason set up
+     *  @param string                   $by      Practitioner
      *
      *  @return boolean  Returns true if the operation succeeded, false if it failed.
     **/
     public function set($player, int $money, string $reason = "none", string $by = "unknown") : bool;
 
     /**
-     *  @param string | Player  $player  Target player information
-     *  @param integer          $money   Amount to be increase
-     *  @param string           $reason  Clear reason that increased
-     *  @param string           $by      Practitioner
+     *  @param string | Player | array  $player  Target player information
+     *  @param integer                  $money   Amount to be increase
+     *  @param string                   $reason  Clear reason that increased
+     *  @param string                   $by      Practitioner
      *
      *  @return boolean  Returns true if the operation succeeded, false if it failed.
     **/
     public function increase($player, int $money, string $reason = "none", string $by = "unknown") : bool;
 
     /**
-     *  @param string | Player  $player  Target player information
-     *  @param integer          $money   Amount to be reduce
-     *  @param string           $reason  Clear reason that reduced
-     *  @param string           $by      Practitioner
+     *  @param string | Player | array  $player  Target player information
+     *  @param integer                  $money   Amount to be reduce
+     *  @param string                   $reason  Clear reason that reduced
+     *  @param string                   $by      Practitioner
      *
      *  @return boolean  Returns true if the operation succeeded, false if it failed.
     **/

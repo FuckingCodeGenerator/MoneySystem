@@ -61,13 +61,15 @@ class CreateForm
         $api = API::getInstance();
         $allMoney = 0;
         foreach ($api->getAll() as $key => $value) {
-            if ($key === "CONSOLE" or Server::getInstance()->isOp($key))
+            if ($key === "CONSOLE" or Server::getInstance()->isOp($key)) {
                 continue;
+            }
             $allMoney += $value["money"];
         }
         $status = 0;
-        if ($allMoney > 0)
+        if ($allMoney > 0) {
             $status = round((($api->get($name) / $allMoney) * 100), 2);
+        }
         $all = $api->getAll();
         $c = [];
         foreach ($all as $all => $value) {
@@ -80,8 +82,9 @@ class CreateForm
         }
         rsort($all);
         foreach ($all as $key => $value) {
-            if ($value == $api->get($name))
+            if ($value == $api->get($name)) {
                 $rank = ++$key;
+            }
         }
         $all = count($all);
         $data = [

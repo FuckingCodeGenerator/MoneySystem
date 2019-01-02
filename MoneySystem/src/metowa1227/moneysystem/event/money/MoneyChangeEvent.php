@@ -5,28 +5,16 @@ use pocketmine\event\Cancellable;
 use pocketmine\Server;
 use pocketmine\Player;
 use metowa1227\moneysystem\event\player\PlayerEvent;
-use metowa1227\moneysystem\api\core\API;
 
 class MoneyChangeEvent extends PlayerEvent implements Cancellable
 {
-    public function __construct(API $api, string $player, int $money, string $reason, string $by, int $type)
+    public function __construct(string $player, int $money, string $reason, string $by, int $type)
     {
-        $this->api = $api;
         $this->player = $player;
         $this->money = $money;
         $this->reason = $reason;
         $this->by = $by;
         $this->type = $type;
-    }
-
-    /**
-     * APIを取得する
-     *
-     * @return API
-    */
-    public function getAPI() : API
-    {
-        return $this->api;
     }
 
     /**

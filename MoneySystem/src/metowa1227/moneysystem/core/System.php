@@ -8,7 +8,6 @@ use metowa1227\moneysystem\commands\main\SystemCommands;
 use metowa1227\moneysystem\commands\player\devices\ExpandingForms;
 use metowa1227\moneysystem\form\Received;
 use metowa1227\moneysystem\event\player\JoinEvent;
-use metowa1227\MoneySystemAPI\MoneySystemAPI;
 
 define("PLUGIN_VERSION", 13.14);
 define("PLUGIN_NAME", "MoneySystem");
@@ -25,8 +24,7 @@ class System extends PluginBase
         //ファイル準備
         $this->initFiles();
         //API準備
-        $this->api = new API($this); //新API
-        $old = new MoneySystemAPI($this); //旧API(互換性保持)
+        $this->api = new API($this); //API
 
         //セーブデータバックアップ
         if ($this->config->get("auto-backup")) {
@@ -93,11 +91,33 @@ class System extends PluginBase
         if (!is_dir($dataPath)) {
             mkdir($dataPath);
         }
-        $this->saveResource("FormIDs.yml", false);
         $this->saveResource("Config.yml", false);
         $this->saveResource("LanguageDatabase.yml", false);
+        $this->makeFormIdsFile();
         $this->config = new Config($this->getDataFolder() . "Config.yml", Config::YAML);
         $this->lang = new Config($this->getDataFolder() . "LanguageDatabase.yml", Config::YAML);
+    }
+
+    /**
+     * FormIDs.ymlを生成する
+     */
+    private function makeFormIdsFile() : void
+    {
+        $ids = [
+            "menu" => mt_rand(1, 9999999),
+            "pay" => mt_rand(1, 9999999),
+            "see" => mt_rand(1, 9999999),
+            "all" => mt_rand(1, 9999999),
+            "increase" => mt_rand(1, 9999999),
+            "reduce" => mt_rand(1, 9999999),
+            "set" => mt_rand(1, 9999999),
+            "pay-send" => mt_rand(1, 9999999),
+            "increase-run" => mt_rand(1, 9999999),
+            "reduce-run" => mt_rand(1, 9999999),
+            "set-run" => mt_rand(1, 9999999),
+            "rank" => mt_rand(1, 9999999),
+        ];
+        new Config($this->getDataFolder() . "FormIDs.yml", Config::YAML, $ids);
     }
 
     /**
