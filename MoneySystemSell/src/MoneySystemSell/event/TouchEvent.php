@@ -45,6 +45,10 @@ class TouchEvent extends SendForm implements Listener
 
 	public function onTouch(PlayerInteractEvent $ev)
 	{
+        if ($ev->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            return 0;
+        }
+        
         $player = $ev->getPlayer();
         $block = $ev->getBlock();
 		$var = $block->x . ":" . $block->y . ":" . $block->z . ":" . $block->getLevel()->getFolderName();

@@ -1,0 +1,7 @@
+## 歴座の保存数 (-1で無制限、制限に達すると古い歴座から順に削除されます)
+number-to-save-history: 100
+## 歴座をファイルに保存するか
+## ファイルに保存するとサーバーが再起動しても継続して保存されます
+history-file-save: true
+## 記録をする最低金額
+amount-of-money-required-for-recording: 3000

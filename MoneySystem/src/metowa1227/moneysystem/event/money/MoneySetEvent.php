@@ -8,12 +8,19 @@ use metowa1227\moneysystem\event\player\PlayerEvent;
 
 class MoneySetEvent extends PlayerEvent implements Cancellable
 {
-    public function __construct(string $player, int $money, string $reason, string $by)
+    /** @var string */
+    private $reason, $by;
+    protected $player;
+    /** @var int */
+    private $money, $before;
+
+    public function __construct(string $player, int $money, string $reason, string $by, int $before)
     {
         $this->player = $player;
         $this->money = $money;
         $this->reason = $reason;
         $this->by = $by;
+        $this->before = $before;
     }
 
     /**
@@ -44,6 +51,16 @@ class MoneySetEvent extends PlayerEvent implements Cancellable
     public function getExecutor() : string
     {
         return $this->by;
+    }
+
+    /**
+     * 変更前の所持金を取得する
+     *
+     * @return int
+    */
+    public function getBefore() : int
+    {
+        return $this->before;
     }
 
     /**

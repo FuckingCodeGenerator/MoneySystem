@@ -7,9 +7,9 @@ interface Listener
 {
     /**
      *  @param  string  | Player  $player
-     *  @param  boolean           $array    If set to true, account data is returned as an array.
+     *  @param  boolean           $array          If set to true, account data is returned as an array.
      *
-     *  @return integer | array             Account data or money
+     *  @return integer | array | null            Account data or money
     **/
     public function get($player, bool $array = false);
 
@@ -19,7 +19,7 @@ interface Listener
      *
      *  @return array
     **/
-    public function getAll(bool $key = false);
+    public function getAll(bool $key = false) : ?array;
 
     /**
      *  @return string  Returns the currency used by MoneySystem
@@ -34,32 +34,32 @@ interface Listener
     /**
      *  @param string | Player | array  $player  Target player information
      *  @param integer                  $money   Amount to be set
-     *  @param string                   $reason  Clear reason set up
      *  @param string                   $by      Practitioner
+     *  @param string                   $reason  Clear reason set up
      *
      *  @return boolean  Returns true if the operation succeeded, false if it failed.
     **/
-    public function set($player, int $money, string $reason = "none", string $by = "unknown") : bool;
+    public function set($player, int $money, string $by = "unknown", string $reason = "none") : bool;
 
     /**
      *  @param string | Player | array  $player  Target player information
      *  @param integer                  $money   Amount to be increase
-     *  @param string                   $reason  Clear reason that increased
      *  @param string                   $by      Practitioner
+     *  @param string                   $reason  Clear reason that increased
      *
      *  @return boolean  Returns true if the operation succeeded, false if it failed.
     **/
-    public function increase($player, int $money, string $reason = "none", string $by = "unknown") : bool;
+    public function increase($player, int $money, string $by = "unknown", string $reason = "none") : bool;
 
     /**
      *  @param string | Player | array  $player  Target player information
      *  @param integer                  $money   Amount to be reduce
-     *  @param string                   $reason  Clear reason that reduced
      *  @param string                   $by      Practitioner
+     *  @param string                   $reason  Clear reason that reduced
      *
      *  @return boolean  Returns true if the operation succeeded, false if it failed.
     **/
-    public function reduce($player, int $money, string $reason = "none", string $by = "unknown") : bool;
+    public function reduce($player, int $money, string $by = "unknown", string $reason = "none") : bool;
 
     /**
      *  @return boolean  Returns true if the backup succeeded.
@@ -72,9 +72,9 @@ interface Listener
     public function getSettings() : array;
 
     /**
-     *  @return  Returns MoneySystem information as an array.
+     *  @return  Returns MoneySystem version.
     **/
-    public function getSystemInfo() : array;
+    public function getVersion() : float;
 
     /**
      *  @return  Acquires the default holding money and returns it.
@@ -107,28 +107,4 @@ interface Listener
      *  @return boolean  Returns true if the account exists, false if it does not exist.
     **/
     public function exists($player) : bool;
-
-    /**
-     *  @param  string | Player  $player  Target information
-     *
-     *  @return null | array  If the account does not exist, it is null, if it exists,
-     *                        it checks whether there is cache data and returns the result as an array.
-     *                        The data in the array is the cached amount and the name of the original player.
-    **/
-    public function hasCache($player);
-
-    /**
-     *  @param  string | Player  $player  Target player
-     *
-     *  @return boolean  Returns true if the operation succeeded.
-    **/
-    public function removeCache($player) : bool;
-
-    /**
-     *  @param  string  $target, $player  Target player and donor
-     *  @param  integer $amount           Donation amount
-     *
-     *  @return Returns true if the operation succeeded.
-    **/
-    public function addCache($target, $player, $amount) : bool;
 }

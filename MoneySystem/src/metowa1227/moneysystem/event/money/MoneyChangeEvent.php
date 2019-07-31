@@ -8,13 +8,25 @@ use metowa1227\moneysystem\event\player\PlayerEvent;
 
 class MoneyChangeEvent extends PlayerEvent implements Cancellable
 {
-    public function __construct(string $player, int $money, string $reason, string $by, int $type)
+    /** @var int */
+    const TYPE_INCREASE = 1;
+    const TYPE_REDUCE = 2;
+    const TYPE_SET = 3;
+
+    /** @var string */
+    private $reason, $by;
+    protected $player;
+    /** @var int */
+    private $money, $type, $before;
+
+    public function __construct(string $player, int $money, string $reason, string $by, int $type, int $before)
     {
         $this->player = $player;
         $this->money = $money;
         $this->reason = $reason;
         $this->by = $by;
         $this->type = $type;
+        $this->before = $before;
     }
 
     /**
@@ -55,6 +67,16 @@ class MoneyChangeEvent extends PlayerEvent implements Cancellable
     public function getAmount() : int
     {
         return $this->money;
+    }
+
+    /**
+     * 変更前の所持金を取得する
+     *
+     * @return int
+    */
+    public function getBefore() : int
+    {
+        return $this->before;
     }
 
     /*

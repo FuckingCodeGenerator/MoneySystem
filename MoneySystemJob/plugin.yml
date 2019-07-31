@@ -1,8 +1,6 @@
 name: MoneySystemJob
 main: MoneySystemJob\MoneySystemJob
-version: 4.41
-api:
-  - 3.2.1
-  - 4.0.0
+version: 4.42
+api: 3
 author: metowa1227
 authors: [yuko fuyutsuki] ##libform (test use)

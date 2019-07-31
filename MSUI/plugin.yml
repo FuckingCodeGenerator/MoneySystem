@@ -1,0 +1,6 @@
+name: MSUI
+main: msui\Main
+version: 1.0
+api: 3
+description: MoneySystemのメニューUI
+depend: MoneySystem

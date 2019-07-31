@@ -1,40 +1,4 @@
 <?php
-
-/*
-* __  __       _                             __    ___    ___   _______
-*|  \/  | ___ | |_  ___   _    _  ____  _   |  |  / _ \  / _ \ |___   /
-*| |\/| |/ _ \| __|/ _ \ | |  | |/  _ \/ /  |  | |_// / |_// /    /  /
-*| |  | |  __/| |_| (_) || |__| || (_)   |  |  |   / /_   / /_   /  /
-*|_|  |_|\___| \__|\___/ |__/\__||____/\_\  |__|  /____| /____| /__/
-*
-*All this program is made by hand of metowa 1227.
-*I certify here that all authorities are in metowa 1227.
-*Expiration date of certification: unlimited
-*Secondary distribution etc are prohibited.
-*The update is also done by the developer.
-*This plugin is a developer API plugin to make it easier to write code.
-*When using this plug-in, be sure to specify it somewhere.
-*Warning if violation is confirmed.
-*
-*Developer: metowa 1227
-*Development Team: metowa 1227 Plugin Development Team (Members: metowa 1227 only)
-*/
-
-/*
-    PluginIntrodtion
-    - CONTENTS
-        - MoneySystemLand's event interface
-    - AUTHOR
-        - metowa1227 (MoneySystemAPI)
-    - DEVELOPMENT ENVIRONMENT
-        - Windows 10 Pro 64bit
-        - Intel(R) Core 2 Duo(TM) E8400 @ 3.00GHz
-        - 8192MB DDR2 SDRAM PC2-5300(667MHz) , PC2-6400(800MHz)
-        - 1.7dev-1001「[REDACTED]」Minecraft PE v1.4.0用実装APIバージョン3.0.0-ALPHA12(プロトコルバージョン261)
-        - PHP 7.2.1 64bit supported version
-        - MoneySystemAPI (SYSTEM) version 12.00 package version 12.00 API version 10.75 GREEN PAPAYA OX4 Edition (Released date: 2018/06/09)
-*/
-
 namespace metowa1227\MoneySystemLand\event;
 
 use metowa1227\moneysystem\api\core\API;
@@ -813,7 +777,7 @@ class LandEditiedEvent implements \pocketmine\event\Listener
                             return true;
                         }
                         $data = $this->backup[$player->getName()];
-                        API::getInstance()->increase($player, $this->price[$player->getName()][$data]);
+                        API::getInstance()->increase($player, $this->price[$player->getName()][$data], "土地の売却");
                         $this->main->db->sellLandById($this->id[$player->getName()][$data]);
                         $player->sendMessage(
                             TextFormat::GREEN . str_replace(
@@ -943,7 +907,7 @@ class LandEditiedEvent implements \pocketmine\event\Listener
                                         $this->main->buycontinue[$player->getName()] = false;
                                         return true;
                                     }
-                                    API::getInstance()->reduce($player, $this->main->buy[$player->getName()]);
+                                    API::getInstance()->reduce($player, $this->main->buy[$player->getName()], "土地の購入");
                                     $this->main->db->addLand($startX, $endX, $startZ, $endZ, $player->getLevel()->getFolderName(), $this->main->buy[$player->getName()], $player->getName());
                                     $player->sendMessage(
                                         TextFormat::GREEN . str_replace(

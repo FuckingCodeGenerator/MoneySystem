@@ -4,28 +4,24 @@ namespace metowa1227\moneysystem\api\core;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\Config;
 use pocketmine\OfflinePlayer;
-use pocketmine\{
-    Server,
-    Player
-};
-use metowa1227\moneysystem\api\listener\{
-    Listener,
-    Types
-};
-use metowa1227\moneysystem\core\System;
-use metowa1227\moneysystem\api\processor\{
-    Processor,
-    GetName,
-    Check
-};
-use metowa1227\moneysystem\database\SQLiteDataManager;
+use pocketmine\Server;
+use pocketmine\Player;
+use metowa1227\moneysystem\api\listener\Listener;
+use metowa1227\moneysystem\api\listener\Types;
+use metowa1227\moneysystem\Main;
+use metowa1227\moneysystem\api\processor\GetName;
+use metowa1227\moneysystem\api\processor\Check;
+use metowa1227\moneysystem\event\money\MoneyChangeEvent;
+use metowa1227\moneysystem\event\money\MoneyIncreaseEvent;
+use metowa1227\moneysystem\event\money\MoneyReduceEvent;
+use metowa1227\moneysystem\event\money\MoneySetEvent;
 
-class API extends Processor implements Listener, Types
+class API implements Listener, Types
 {
     use GetName, Check;
+
     /**
      * 言語データベース用の色データ
-     * Color conversion data of language file
      *
      * @var string
     */
@@ -56,45 +52,49 @@ class API extends Processor implements Listener, Types
 
     /**
      * 言語データベース用の色データ
-     * Color conversion data of language file
      *
      * @var string
     */
     private $color = [
-        TextFormat::ESCAPE . "0",
-        TextFormat::ESCAPE . "1",
-        TextFormat::ESCAPE . "2",
-        TextFormat::ESCAPE . "3",
-        TextFormat::ESCAPE . "4",
-        TextFormat::ESCAPE . "5",
-        TextFormat::ESCAPE . "6",
-        TextFormat::ESCAPE . "7",
-        TextFormat::ESCAPE . "8",
-        TextFormat::ESCAPE . "9",
-        TextFormat::ESCAPE . "a",
-        TextFormat::ESCAPE . "b", 
-        TextFormat::ESCAPE . "c",
-        TextFormat::ESCAPE . "d",
-        TextFormat::ESCAPE . "e",
-        TextFormat::ESCAPE . "f",
-        TextFormat::ESCAPE . "k",
-        TextFormat::ESCAPE . "l",
-        TextFormat::ESCAPE . "m",
-        TextFormat::ESCAPE . "n",
-        TextFormat::ESCAPE . "o",
-        TextFormat::ESCAPE . "r"
+        TextFormat::BLACK,
+        TextFormat::DARK_BLUE,
+        TextFormat::DARK_GREEN,
+        TextFormat::DARK_AQUA,
+        TextFormat::DARK_RED,
+        TextFormat::DARK_PURPLE,
+        TextFormat::GOLD,
+        TextFormat::GRAY,
+        TextFormat::DARK_GRAY,
+        TextFormat::BLUE,
+        TextFormat::GREEN,
+        TextFormat::AQUA, 
+        TextFormat::RED,
+        TextFormat::LIGHT_PURPLE,
+        TextFormat::YELLOW,
+        TextFormat::WHITE,
+        TextFormat::OBFUSCATED,
+        TextFormat::BOLD,
+        TextFormat::STRIKETHROUGH,
+        TextFormat::UNDERLINE,
+        TextFormat::ITALIC,
+        TextFormat::RESET
     ];
 
-    /**
-     * @var API
-    */
+    /** @var API */
     private static $instance = null;
+    /** @var Config */
+    private $dataFile, $lang, $user, $config, $logger;
+    /** @var array */
+    private $lang_all;
+    /** @var array */
+    private $data = null;
 
-    public function __construct(System $system)
+    public function __construct(Main $system)
     {
         $this->system = $system;
-        $this->db = new SQLiteDataManager($system);
-        $this->lang = new Config($system->getDataFolder() . "LanguageDatabase.yml", Config::YAML);
+        $this->dataFile = new Config($system->getDataFolder() . "Accounts.yml", Config::YAML);
+        $this->data = $this->dataFile->getAll();
+        $this->lang = new Config($system->getDataFolder() . "Language.yml", Config::YAML);
         $this->user = new Config($system->getDataFolder() . "UserList.yml", Config::YAML);
         $this->config = new Config($system->getDataFolder() . "Config.yml", Config::YAML);
         $this->logger = $system->getLogger();
@@ -102,14 +102,8 @@ class API extends Processor implements Listener, Types
         self::$instance = $this;
     }
 
-    public function close(System $system) : void
-    {
-        $this->db->close();
-    }
-
     /**
      * APIのインスタンスを取得する
-     * Get an instance of the API
      *
      * @return API
     */
@@ -123,11 +117,8 @@ class API extends Processor implements Listener, Types
         if (!$this->lang->exists($key)) {
             return TextFormat::RED . "The character string \"" . TextFormat::YELLOW . $key . TextFormat::RED . "\" could not be found from the search result database.";
         }
-        $message = str_replace("[EOL]", "\n" . str_pad(" ", 66), $this->lang_all[$key]);
-        $message = str_replace("[EOLL]", "\n", $this->lang_all[$key]);
-        $colorTag = $this->colorTag;
-        $color = $this->color;
-        $message = str_replace($colorTag, $color, $message);
+        $message = str_replace(["[EOLL]", "[EOL]"], ["\n", "\n" . str_pad(" ", 33)], $this->lang_all[$key]);
+        $message = str_replace($this->colorTag, $this->color, $message);
         if (!empty($input)) {
             $count = (int) count($input);
             for ($i = 0; $i < $count; ++$i) {
@@ -142,52 +133,44 @@ class API extends Processor implements Listener, Types
 
     /**
      * プレイヤーの所持金を取得する
-     * Get the player's money
      *
      * @param string | Player  $player
-     * @param bool             $array  [trueの場合はアカウントごと返す]
+     * @param bool             $array  [アカウントごと返すか]
      *
-     * @return null | int
+     * @return null | int | array
     */
     public function get($player, bool $array = false)
     {
         $this->getName($player);
-        if ($array) {
-            return $this->db->file("SELECT money FROM account WHERE name = \"$player\"");
+        if (!$this->exists($player)) {
+            return null;
         }
-        return $this->db->file("SELECT money FROM account WHERE name = \"$player\"")["money"];
+        return $array ? $this->data[$player] : $this->data[$player];
     }
 
     /**
      * 全プレイヤーの所持金を取得する
-     * Get all player's money
      *
-     * @param bool $key [trueの場合はアカウントごと返す]
+     * @param bool $key [プレイヤー名のみ返すか]
      *
-     * @return array
+     * @return array | null     配列: [プレイヤー名, 所持金]
     */
-    public function getAll(bool $key = false) : array
+    public function getAll(bool $key = false) : ?array
     {
-        if (!$this->user->getAll()) {
-            return [];
+        $this->getName($player);
+        if ($key) {
+            return array_keys($this->data);
         }
 
-        $result = array();
-        if ($key) {
-            foreach ($this->user->getAll(true) as $list) {
-                array_push($result, $list);
-            }
-        } else {
-            foreach ($this->user->getAll(true) as $list) {
-                array_push($result, $this->db->file("SELECT * FROM account WHERE name = \"$list\""));
-            }
+        $result = [];
+        foreach ($this->data as $player => $data) {
+            $result[$player] = $data;
         }
         return $result;
     }
 
     /**
      * 通貨を取得
-     * Get currency
      *
      * @return string
     */
@@ -198,13 +181,13 @@ class API extends Processor implements Listener, Types
 
     /**
      * データを保存する
-     * Data save
      *
      * @return bool
     */
     public function save() : bool
     {
-        return $this->db->save();
+        $this->dataFile->setAll($this->data);
+        return $this->dataFile->save();
     }
 
     /**
@@ -213,41 +196,57 @@ class API extends Processor implements Listener, Types
      * @param string                   $reason
      * @param string                   $by [caller]
      *
-     * @return bool
+     * @return void
      */
-    private function processEdit($player, $money, $reason, $by, $type) : bool
+    private function processArray($players, $money, $reason, $by, $type) : void
     {
-        if (!is_array($player)) {
-            return $this->process($player, $money, $reason, $by, $type, $this->db);
-        }
-
-        foreach ($player as $players) {
-            if (!$this->process($players, $money, $reason, $by, $type, $this->db)) {
-                return false;
+        foreach ($players as $player) {
+            switch ($type) {
+                case self::TYPE_INCREASE:
+                    $this->increase($player, $money, $by, $reason);
+                    break;
+                case self::TYPE_REDUCE:
+                    $this->reduce($player, $money, $by, $reason);
+                    break;
+                case self::TYPE_SET:
+                    $this->set($player, $money, $by, $reason);
+                    break;
             }
         }
-        return true;
     }
 
     /**
      * プレイヤーの所持金を設定する
-     * Set player's money
      *
      * @param Player | string | array  $player
      * @param int                      $money
-     * @param string                   $reason
      * @param string                   $by [caller]
+     * @param string                   $reason
      *
      * @return bool
     */
-    public function set($player, int $money, string $reason = "none", string $by = "unknown") : bool
+    public function set($player, int $money, string $by = "unknown", string $reason = "none") : bool
     {
-        return $this->processEdit($player, $money, $reason, $by, self::TYPE_SET);
+        if (is_array($player)) {
+            $this->processArray($player, $money, $reason, $by, self::TYPE_SET);
+        } else {
+            $this->getName($player);
+            if (!$this->exists($player)) {
+                return false;
+            }
+            Server::getInstance()->getPluginManager()->callEvent($result = new MoneyChangeEvent($player, $money, $reason, $by, self::TYPE_SET, $this->get($player)));
+            Server::getInstance()->getPluginManager()->callEvent($result2 = new MoneySetEvent($player, $money, $reason, $by, $this->get($player)));
+            if (!$result->isCancelled() && !$result2->isCancelled()) {
+                $money = $this->check($money);
+                $this->data[$player] = $money;
+                return true;
+            }
+            return false;
+        }
     }
 
     /**
      * プレイヤーの所持金を増やす
-     * Increase player's money
      *
      * @param Player | string  $player
      * @param int              $money
@@ -256,14 +255,32 @@ class API extends Processor implements Listener, Types
      *
      * @return bool
     */
-    public function increase($player, int $money, string $reason = "none", string $by = "unknown") : bool
+    public function increase($player, int $money, string $by = "unknown", string $reason = "none") : bool
     {
-        return $this->processEdit($player, $money, $reason, $by, self::TYPE_INCREASE);
+        if (is_array($player)) {
+            $this->processArray($player, $money, $reason, $by, self::TYPE_INCREASE);
+        } else {
+            $this->getName($player);
+            if (!$this->exists($player)) {
+                return false;
+            }
+            Server::getInstance()->getPluginManager()->callEvent($result = new MoneyChangeEvent($player, $money, $reason, $by, self::TYPE_INCREASE, $this->get($player)));
+            Server::getInstance()->getPluginManager()->callEvent($result2 = new MoneyIncreaseEvent($player, $money, $reason, $by, $this->get($player)));
+            if (!$result->isCancelled() && !$result2->isCancelled()) {
+                $money = $this->get($player) + $money;
+                if ($money > Main::MAX_MONEY) {
+                    $money = Main::MAX_MONEY;
+                }
+                $money = $this->check($money);
+                $this->data[$player] = $money;
+                return true;
+            }
+            return false;
+        }
     }
 
     /**
      * プレイヤーの所持金を減らす
-     * Reduce player's money
      *
      * @param Player | string  $player
      * @param int              $money
@@ -272,14 +289,29 @@ class API extends Processor implements Listener, Types
      *
      * @return bool
     */
-    public function reduce($player, int $money, string $reason = "none", string $by = "unknown") : bool
+    public function reduce($player, int $money, string $by = "unknown", string $reason = "none") : bool
     {
-        return $this->processEdit($player, $money, $reason, $by, self::TYPE_REDUCE);
+        if (is_array($player)) {
+            $this->processArray($player, $money, $reason, $by, self::TYPE_REDUCE);
+        } else {
+            $this->getName($player);
+            if (!$this->exists($player)) {
+                return false;
+            }
+            Server::getInstance()->getPluginManager()->callEvent($result = new MoneyChangeEvent($player, $money, $reason, $by, self::TYPE_REDUCE, $this->get($player)));
+            Server::getInstance()->getPluginManager()->callEvent($result2 = new MoneyReduceEvent($player, $money, $reason, $by, $this->get($player)));
+            if (!$result->isCancelled() && !$result2->isCancelled()) {
+                $money = $this->get($player) - $money;
+                $money = $this->check($money);
+                $this->data[$player] = $money;
+                return true;
+            }
+            return false;
+        }
     }
 
     /**
      * データをバックアップする
-     * Back up data
      *
      * @return bool
     */
@@ -294,23 +326,21 @@ class API extends Processor implements Listener, Types
         }
         @mkdir(Server::getInstance()->getDataPath() . "MoneySystemBackupFiles/" . date("D_M_j-H.i.s-T_Y", time()));
         $path = Server::getInstance()->getDataPath() . "MoneySystemBackupFiles/" . date("D_M_j-H.i.s-T_Y", time());
-        $file = $path . "\\Account[Backup].sqlite3";
+        $file = $path . "\\Accounts[Backup].yml";
         try {
-            if (!copy($dir . "Account.sqlite3", $file)) {
+            if (!copy($dir . "Accounts.yml", $file)) {
                 throw new \Exception("File backup failed.");
             }
         } catch (\Exception $error) {
-            $this->logger->error("File backup failed. To start the server safely please back up the file manually.");
+            $this->logger->error($this->getMessage("backup-failed"));
             return false;
         }
-        $this->logger->info(TextFormat::GREEN . "The data file was backed up. The data was transferred to another folder.");
-        $this->logger->info(TextFormat::GREEN . "Please note that even if the backup succeeds 100% of the data is not protected!");
+        $this->logger->info($this->getMessage("backup-success"));
         return true;
     }
 
     /**
      * 設定内容を取得する
-     * Acquire setting contents
      *
      * @return array
     */
@@ -321,18 +351,16 @@ class API extends Processor implements Listener, Types
 
     /**
      * MoneySystemの情報を取得する
-     * Get the MoneySystem's information
      *
-     * @return array
+     * @return float
     */
-    public function getSystemInfo() : array
+    public function getVersion() : float
     {
-        return array(PLUGIN_NAME, PLUGIN_VERSION, PLUGIN_CODE);
+        return Main::PLUGIN_VERSION;
     }
 
     /**
      * デフォルトの所持金を取得する
-     * Get the default money
      *
      * @return int
     */
@@ -343,7 +371,6 @@ class API extends Processor implements Listener, Types
 
     /**
      * デフォルトの所持金を設定する
-     * Set default default money
      *
      * @param int $money
      *
@@ -353,13 +380,12 @@ class API extends Processor implements Listener, Types
     {
         $money = $this->check($money);
         $this->config->set("default-money", $money);
-        $this->config->save(true);
+        $this->config->save();
         return true;
     }
 
     /**
      * アカウントを作成する
-     * Create an account
      *
      * @param Player | string  $player
      * @param int              $money
@@ -373,16 +399,13 @@ class API extends Processor implements Listener, Types
             $money = $this->getDefaultMoney();
         }
         if (!$this->exists($player)) {
-            $this->db->file("INSERT OR REPLACE INTO account VALUES (\"$player\", $money, 0, \"NONE\")");
-            $this->user->set($player);
-            $this->user->save(true);
+            $this->data[$player] = $money;
         }
         return true;
     }
 
     /**
      * アカウントを削除する
-     * Remove an account
      *
      * @param Player | string  $player
      *
@@ -394,15 +417,12 @@ class API extends Processor implements Listener, Types
         if (!$this->exists($player)) {
             return false;
         }
-        $this->db->file("DELETE FROM account WHERE name = \"$player\"");
-        $this->user->remove($player);
-        $this->user->save(true);
+        unset($this->data[$player]);
         return true;
     }
 
     /**
      * プレイヤーのアカウントが存在するかを調べる
-     * Check if player's account exists
      *
      * @param Player | string  $player
      * 
@@ -411,34 +431,6 @@ class API extends Processor implements Listener, Types
     public function exists($player) : bool
     {
         $this->getName($player);
-        return $this->user->exists($player);
-    }
-
-    public function hasCache($player)
-    {
-        $this->getName($player);
-        return $this->db->file("SELECT cache, by FROM account WHERE name = \"$player\"");
-    }
-
-    public function removeCache($player) : bool
-    {
-        $this->getName($player);
-        $backup = $this->hasCache($player);
-        $cache = $backup["cache"];
-        $by = $backup["by"];
-        $this->db->file("UPDATE account SET cache = 0, by = \"NONE\" WHERE name = \"$player\"");
-        return true;
-    }
-
-    public function addCache($target, $player, $amount) : bool
-    {
-        $cache = $this->hasCache($target);
-        $cache = $cache["cache"];
-        $by = ltrim($cache["by"], "NONE");
-        $next = $cache + $amount;
-        $next2 = $by . ", " . $player;
-        $next2 = ltrim($next2, ", ");
-        $this->db->file("UPDATE account SET cache = $next, by = \"$next2\" WHERE name = \"$target\"");
-        return true;
+        return isset($this->data[$player]);
     }
 }

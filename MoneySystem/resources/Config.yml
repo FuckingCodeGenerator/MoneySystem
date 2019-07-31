@@ -2,5 +2,6 @@
 ## Please absolutely do not change the column marked "!!!" ##
 default-money: 3000
 auto-backup: true
-file-log: false
 unit: $
+# (min)
+save-interval: 15

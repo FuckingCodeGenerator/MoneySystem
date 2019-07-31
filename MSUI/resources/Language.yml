@@ -1,0 +1,85 @@
+## This file is MoneySystem's language database file ##
+## Please freely modify the message part ##
+## Explanation: "[TAG: NO."number"]" is assigned specific information ##
+## A linefeed code is assigned with "[EOL]"" ##
+## To change the text color, use the "[COLOR]" tag ##
+
+only-in-game: "コマンドはプレイヤーから実行してください。"
+
+no-permission: "この操作をする権限がありません。"
+
+join.payment: "[TAG: NO.0] から  [TAG: NO.1][TAG: NO.2] を受け取りました。"
+
+form.menu.info: "所持金: [TAG: NO.0][TAG: NO.1][EOLL]ステータス: [TAG: NO.2]％ | ランキング: [TAG: NO.3]位([TAG: NO.4]中)"
+
+form.see.label: "プレイヤーの所持金を確認します。[EOLL]プレイヤー名を入力するか、オンラインのプレイヤーを選択してください。[EOLL]"
+form.see.dropdown: "オンラインのプレイヤー:"
+form.see.dropdown.default: "選択してください。"
+form.see.input: "[EOLL]プレイヤー名で検索 (名前の一部でも可):"
+form.see.search.result: "プレイヤーの検索結果:"
+see.result: "[TAG: NO.0]さんの所持金: [TAG: NO.1][TAG: NO.2]"
+
+form.pay.label: "プレイヤーに送金します。[EOLL]プレイヤー名を入力するか、オンラインのプレイヤーを選択してください。[EOLL]"
+form.pay.dropdown: "オンラインのプレイヤー:"
+form.pay.dropdown.default: "選択してください。"
+form.pay.input.playername: "[EOLL]プレイヤー名で検索 (名前の一部でも可):"
+form.pay.input.amount: "[EOLL]送金する金額:"
+form.pay.search.result: "プレイヤーの検索結果:"
+pay.only-avove-zero: "[COLOR: YELLOW]送金できる金額は0以上です。"
+pay.integer-only: "[COLOR: YELLOW]送金できる金額は整数値のみです。"
+pay.insufficient-money: "[COLOR: YELLOW]所持金が不足しています。"
+pay.success: "[TAG: NO.0]さんに [TAG: NO.1][TAG: NO.2] を送金しました。"
+pay.receive: "[TAG: NO.0]さんから [TAG: NO.1][TAG: NO.2] を受け取りました。"
+
+form.rank.modal.content: "所持金ランキングにオペレーター権限所有者のデータも含めますか？"
+form.rank.modal.button1: "含めない"
+form.rank.modal.button2: "含める"
+form.rank.result: "[COLOR: BOLD]所持金ランキング[EOLL][EOLL]"
+
+form.set.label: "プレイヤーの所持金を設定します。[EOLL]プレイヤー名を入力するか、オンラインのプレイヤーを選択してください。[EOLL]"
+form.set.dropdown: "オンラインのプレイヤー:"
+form.set.dropdown.default: "選択してください。"
+form.set.input.playername: "[EOLL]プレイヤー名で検索 (名前の一部でも可):"
+form.set.input.amount: "[EOLL]設定値:"
+form.set.search.result: "プレイヤーの検索結果:"
+set.only-avove-zero: "[COLOR: YELLOW]設定可能な値は0以上です。"
+set.integer-only: "[COLOR: YELLOW]設定可能な数値は整数値のみです。"
+set.success: "[TAG: NO.0]の所持金を [TAG: NO.1][TAG: NO.2] に設定しました。"
+
+form.increase.label: "プレイヤーの所持金を設定します。[EOLL]プレイヤー名を入力するか、オンラインのプレイヤーを選択してください。[EOLL]"
+form.increase.dropdown: "オンラインのプレイヤー:"
+form.increase.dropdown.default: "選択してください。"
+form.increase.input.playername: "[EOLL]プレイヤー名で検索 (名前の一部でも可):"
+form.increase.input.amount: "[EOLL]設定値:"
+form.increase.search.result: "プレイヤーの検索結果:"
+increase.only-avove-zero: "[COLOR: YELLOW]指定可能な値は0以上です。"
+increase.integer-only: "[COLOR: YELLOW]指定可能な数値は整数値のみです。"
+increase.success: "[TAG: NO.0]の所持金を [TAG: NO.1][TAG: NO.2] 増加させました。"
+
+form.reduce.label: "プレイヤーの所持金を設定します。[EOLL]プレイヤー名を入力するか、オンラインのプレイヤーを選択してください。[EOLL]"
+form.reduce.dropdown: "オンラインのプレイヤー:"
+form.reduce.dropdown.default: "選択してください。"
+form.reduce.input.playername: "[EOLL]プレイヤー名で検索 (名前の一部でも可):"
+form.reduce.input.amount: "[EOLL]設定値:"
+form.reduce.search.result: "プレイヤーの検索結果:"
+reduce.only-avove-zero: "[COLOR: YELLOW]指定可能な値は0以上です。"
+reduce.integer-only: "[COLOR: YELLOW]指定可能な数値は整数値のみです。"
+reduce.success: "[TAG: NO.0]の所持金を [TAG: NO.1][TAG: NO.2] 減少させました。"
+
+form.history.label: "サーバー稼働中の所持金操作ログ[EOLL]対象のボタンから詳細が確認可能[EOLL]"
+form.history.result: "実行日時: [TAG: NO.0] [TAG: NO.1][EOLL]実行者: [TAG: NO.2][EOLL]対象者: [TAG: NO.3][EOLL]操作: 所持金の[TAG: NO.4][EOLL]金額: [TAG: NO.5][EOLL]実行前の所持金: [TAG: NO.6][EOLL]実行時、実行者ワールド: [TAG: NO.7][EOLL]実行時、対象者ワールド: [TAG: NO.8]"
+form.history.undo: "操作の取り消し"
+form.history.undo.success: "操作の取り消しに成功しました。"
+
+close: "閉じる"
+continue: "続ける"
+pay: "送金する"
+see: "プレイヤーの所持金を見る"
+all: "全プレイヤーの所持金を見る"
+increase: "所持金を増やす"
+reduce: "所持金を減らす"
+set: "所持金を設定する"
+select: "選択してください"
+ranking: "所持金ランキング"
+cancel: "キャンセル"
+history: "歴座"

@@ -1,7 +1,7 @@
 name: MoneySystemLand
 main: metowa1227\MoneySystemLand\MoneySystemLand
 version: NewEdition_0.1.1
-api: 3.2.1
+api: 3.2.2
 author: metowa1227
 commands:
   land:

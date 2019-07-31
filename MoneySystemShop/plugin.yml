@@ -1,7 +1,5 @@
 name: MoneySystemShop
-version: 4.42
-api:
-  - 3.2.1
-  - 4.0.0
+version: 4.43
+api: 3
 main: MoneySystemShop\MoneySystemShop
 author: metowa1227
