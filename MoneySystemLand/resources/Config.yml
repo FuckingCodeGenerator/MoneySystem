@@ -27,6 +27,7 @@ free:
 
 ##Whether to activate Teleport (true = enable | false = disable)
 teleport: true
+teleportOpOnly: false
 
 ##Do not edit this value
 id: 1

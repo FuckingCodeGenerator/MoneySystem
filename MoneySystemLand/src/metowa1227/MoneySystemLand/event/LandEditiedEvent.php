@@ -236,6 +236,10 @@ class LandEditiedEvent implements \pocketmine\event\Listener
                             $this->main->send($player, $data, $this->main->tpdisabled);
                             return false;
                         } else {
+                            if ($this->main->config->get("teleportOpOnly") && !$player->isOp()) {
+                                $player->sendMessage(TextFormat::YELLOW . "You have no permission to teleport");
+                                return true;
+                            }
                             $buttons[] = [
                                 "text" => $this->main->getMessage($player->getName(), "close")
                             ];
