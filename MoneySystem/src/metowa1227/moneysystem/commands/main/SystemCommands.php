@@ -18,7 +18,7 @@ class SystemCommands extends Command
 
     public function execute(CommandSender $sender, string $label, array $args) : bool
     {
-        for ($i = 0; $i <= 6; $i++) {
+        for ($i = 0; $i <= 4; $i++) {
             $sender->sendMessage(API::getInstance()->getMessage("command.system-guide-" . $i));
         }
         return true;
