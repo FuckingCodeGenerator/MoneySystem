@@ -1,4 +1,4 @@
-## Language (#en)English
+## Language [English](#en)
 
 <a name="en"></a>
 # MoneySystem
