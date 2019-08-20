@@ -1,2 +1,4 @@
+## Language (#en)English
+
+<a name="en"></a>
 # MoneySystem
-One type of economic system of PocketMine-MP
