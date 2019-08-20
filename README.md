@@ -5,6 +5,8 @@
 ```This English text is machine translated by Google Translate.```<br>
 # MoneySystem
 A plug-in that adds economic elements to PocketMine-MP.<br>
+## Download
+[Download](http://metowa1227.s1001.xrea.com/downloadStorage/pmmp/moneysystem/)
 ## Commands
 | Command | Desctiption | Usage |
 ---- | ---- | ----
@@ -20,6 +22,8 @@ $result = API::getInstance()->increase($player, $amount);
 <a name="ja"></a>
 # MoneySystem
 サーバーに経済要素を追加する PocketMine-MP 用のプラグインです。<br>
+## ダウンロード
+[ダウンロード](http://metowa1227.s1001.xrea.com/downloadStorage/pmmp/moneysystem/)
 ## コマンド
 | コマンド | 説明 | 使用方法 |
 ---- | ---- | ----
