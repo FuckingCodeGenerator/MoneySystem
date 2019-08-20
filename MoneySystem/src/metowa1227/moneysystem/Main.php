@@ -12,7 +12,7 @@ use metowa1227\moneysystem\task\SaveTask;
 class Main extends PluginBase
 {
 
-	const PLUGIN_VERSION = 13.30;
+	const PLUGIN_VERSION = 13.31;
 	const PLUGIN_NAME = 'MoneySystem';
 	const PLUGIN_CODE = 'xhenom';
 	const MAX_MONEY = 99999999999;
@@ -28,7 +28,7 @@ class Main extends PluginBase
 
         $this->registerCommand();
         $this->displayInfoToConsole();
-        $this->getScheduler()->scheduleRepeatingTask(new SaveTask($this), $this->config->get("save-interval") * 20 * 60);
+        $this->startTask();
 
         $this->getLogger()->info($this->api->getMessage("system.startup-compleate", array(self::PLUGIN_VERSION)));
     }
@@ -37,6 +37,19 @@ class Main extends PluginBase
     {
         $this->getLogger()->info("シャットダウンしています...");
         $this->api->save();
+    }
+
+    /**
+     * Start autosave task
+     *
+     * @return void
+     */
+    private function startTask() : void
+    {
+        if (!$this->config->get("auto-save")) {
+            return;
+        }
+        $this->getScheduler()->scheduleRepeatingTask(new SaveTask($this, $this->config->get("save-announce")), $this->config->get("save-interval") * 20 * 60);
     }
 
     /**

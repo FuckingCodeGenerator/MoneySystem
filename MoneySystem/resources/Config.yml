@@ -5,3 +5,5 @@ auto-backup: true
 unit: $
 # (min)
 save-interval: 15
+auto-save: true
+save-announce: true

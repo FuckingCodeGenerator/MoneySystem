@@ -1,0 +1,73 @@
+## This file is MoneySystem's language database file ##
+## Please freely modify the message part ##
+## Explanation: "[TAG: NO."number"]" is assigned specific information ##
+## A linefeed code is assigned with "[EOL]"" ##
+## To change the text color, use the "[COLOR]" tag ##
+
+system.no-internet-connection: インターネット接続が確立できませんでした。
+system.no-internet-connection-2: アップデート情報が取得できませんでした。
+system.update-required: '[COLOR: AQUA]新しいMoneySystemがリリースされています。[EOL]最新バージョンを[TAG: NO.0] にダウンロードしました。[EOL]現在のバージョンと入れ替えて再起動してください。'
+system.latest-version: '[COLOR: GREEN]このMoneySystemは最新バージョンです。'
+system.update-disabled: Configファイルにより自動アップデート受信機能が無効化されています。[EOL]重大な脆弱性などの修正や致命的なバグなどの修正がリリースされている場合がありますので、自己責任で起動をしてください！
+system.update-info: '[COLOR: GREEN]アップデート情報: MoneySystem version [TAG: NO.0] -> [TAG: NO.1]'
+system.update_description: '[COLOR: GREEN]説明: [TAG: NO.0]'
+system.startup-compleate: '起動完了！ バージョン: [TAG: NO.0]'
+command.player-only: このコマンドはコンソールからは実行できません。
+command.system-guide-0: '- [COLOR: YELLOW]Description of MoneySystem[COLOR: RESET] -'
+command.system-guide-1: MoneySystem はあなたのサーバーに軽量かつ高速で、強力な経済システムを提供します。
+command.system-guide-2: MoneySystem は日本の中学生によって開発され、その後の度重なるアップデートにより現在の強力なシステムが作りあげられました。
+command.system-guide-3: ライセンスは同梱されているものを適応します。
+command.system-guide-4: '/moneysystem: システムの情報やコマンドの使い方を表示します。'
+command.system-guide-5: '/ms: システムのメインフォームを展開します。'
+command.system-guide-6: /// (c) 2016 metowa1227 ///
+
+join.payment: "[TAG: NO.0] から  [TAG: NO.1][TAG: NO.2] を受け取りました。"
+
+pay.target: 送金する相手
+pay.amount: 送金する金額
+pay.confirm: "[TAG: NO.0]に[TAG: NO.1][TAG: NO.2]を送金します。"
+pay.failed: 送金に失敗しました。
+pay.success: "[TAG: NO.0]に[TAG: NO.1][TAG: NO.2]を送金しました。"
+pay.received: "[TAG: NO.0]から[TAG: NO.1][TAG: NO.2]を受け取りました。"
+pay.cancel: 送金をキャンセルしました。
+
+see.target: 所持金を閲覧するプレイヤー
+see.notfound: 指定したプレイヤーが見つかりませんでした。
+see.no-entry: プレイヤー名を入力してください。
+see.result: "[TAG: NO.0]の所持金は[TAG: NO.1][TAG: NO.2]です。"
+
+increase.target: 所持金を増やすプレイヤー
+increase.amount: 増やす金額
+increase.confirm: "[TAG: NO.0]の所持金を[TAG: NO.1][TAG: NO.2]増やします。"
+increase.success: "[TAG: NO.0]の所持金を[TAG: NO.1][TAG: NO.2]増やしました。"
+increase.failed: 所持金の編集に失敗しました。
+increase.cancel: 処理をキャンセルしました。
+
+reduce.target: 所持金を減らすプレイヤー
+reduce.amount: 減らす金額
+reduce.confirm: "[TAG: NO.0]の所持金を[TAG: NO.1][TAG: NO.2]減らします。"
+reduce.success: "[TAG: NO.0]の所持金を[TAG: NO.1][TAG: NO.2]減らしました。"
+reduce.failed: 所持金の編集に失敗しました。
+reduce.cancel: 処理をキャンセルしました。
+
+set.target: 所持金を設定するプレイヤー
+set.amount: 設定する金額
+set.confirm: "[TAG: NO.0]の所持金を[TAG: NO.1][TAG: NO.2]に設定します。"
+set.success: "[TAG: NO.0]の所持金を[TAG: NO.1][TAG: NO.2]に設定しました。"
+set.failed: 所持金の編集に失敗しました。
+set.cancel: 処理をキャンセルしました。
+
+form.menu.info: "所持金: [TAG: NO.0][TAG: NO.1][EOLL]ステータス: [TAG: NO.2]％ | ランキング: [TAG: NO.3]位([TAG: NO.4]中)[EOLL][TAG: NO.5]:"
+
+close: 閉じる
+continue: 続ける
+pay: 送金する
+see: プレイヤーの所持金を見る
+all: 全プレイヤーの所持金を見る
+increase: 所持金を増やす
+reduce: 所持金を減らす
+set: 所持金を設定する
+select: 選択してください
+ranking: 所持金ランキング
+cancel: キャンセル
+...
