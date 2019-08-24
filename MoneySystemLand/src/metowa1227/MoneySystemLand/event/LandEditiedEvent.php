@@ -904,42 +904,40 @@ class LandEditiedEvent implements \pocketmine\event\Listener
                                     return true;
                                 }
                             }
-                            if ($this->main->config->get("limit") !== -1) {
-                                if (count($this->main->db->getLands($player->getName())) <= $this->main->config->get("limit")) {
-                                    if (API::getInstance()->get($player) < $this->main->buy[$player->getName()]) {
-                                        $player->sendMessage($this->main->getMessage($player->getName(), "no-money"));
-                                        $this->main->buycontinue[$player->getName()] = false;
-                                        return true;
-                                    }
-                                    API::getInstance()->reduce($player, $this->main->buy[$player->getName()], "土地の購入");
-                                    $this->main->db->addLand($startX, $endX, $startZ, $endZ, $player->getLevel()->getFolderName(), $this->main->buy[$player->getName()], $player->getName());
-                                    $player->sendMessage(
-                                        TextFormat::GREEN . str_replace(
-                                            array(
-                                                "--UNIT--",
-                                                "--PRICE--",
-                                                "--ID--"
-                                            ),
-                                            array(
-                                                API::getInstance()->getUnit(),
-                                                $this->main->buy[$player->getName()],
-                                                $this->main->config->get("id")
-                                            ),
-                                            $this->main->getMessage($player->getName(), "bought-land")
-                                        )
-                                    );
-                                    unset(
-                                        $this->main->start[$player->getName()],
-                                        $this->main->end[$player->getName()],
-                                        $this->main->buy[$player->getName()]
-                                    );
-                                    $this->main->buycontinue[$player->getName()] = false;
-                                    return true;
-                                } else {
-                                    $player->sendMessage($this->main->getMessage($player->getName(), "land-limit"));
+                            if (count($this->main->db->getLands($player->getName())) <= $this->main->config->get("limit") || $this->main->config->get("limit") === -1) {
+                                if (API::getInstance()->get($player) < $this->main->buy[$player->getName()]) {
+                                    $player->sendMessage($this->main->getMessage($player->getName(), "no-money"));
                                     $this->main->buycontinue[$player->getName()] = false;
                                     return true;
                                 }
+                                API::getInstance()->reduce($player, $this->main->buy[$player->getName()], "土地の購入");
+                                $this->main->db->addLand($startX, $endX, $startZ, $endZ, $player->getLevel()->getFolderName(), $this->main->buy[$player->getName()], $player->getName());
+                                $player->sendMessage(
+                                    TextFormat::GREEN . str_replace(
+                                        array(
+                                            "--UNIT--",
+                                            "--PRICE--",
+                                            "--ID--"
+                                        ),
+                                        array(
+                                            API::getInstance()->getUnit(),
+                                            $this->main->buy[$player->getName()],
+                                            $this->main->config->get("id")
+                                        ),
+                                        $this->main->getMessage($player->getName(), "bought-land")
+                                    )
+                                );
+                                unset(
+                                    $this->main->start[$player->getName()],
+                                    $this->main->end[$player->getName()],
+                                    $this->main->buy[$player->getName()]
+                                );
+                                $this->main->buycontinue[$player->getName()] = false;
+                                return true;
+                            } else {
+                                $player->sendMessage($this->main->getMessage($player->getName(), "land-limit"));
+                                $this->main->buycontinue[$player->getName()] = false;
+                                return true;
                             }
                         }
                     }
