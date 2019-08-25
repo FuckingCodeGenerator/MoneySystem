@@ -3,9 +3,9 @@ namespace msui\event\player;
 
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
+use metowa1227\moneysystem\api\core\API;
 use msui\Main;
 use msui\Pay;
-use metowa1227\moneysystem\api\core\API;
 
 class JoinPlayer extends Pay implements Listener
 {

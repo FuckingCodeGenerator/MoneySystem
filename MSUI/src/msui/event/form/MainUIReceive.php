@@ -4,11 +4,11 @@ namespace msui\event\form;
 use pocketmine\Server;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
-use jojoe77777\FormAPI\CustomForm;
-use jojoe77777\FormAPI\ModalForm;
-use jojoe77777\FormAPI\SimpleForm;
-use msui\Main;
 use metowa1227\moneysystem\api\core\API;
+use msui\jojoe77777\FormAPI\CustomForm;
+use msui\jojoe77777\FormAPI\ModalForm;
+use msui\jojoe77777\FormAPI\SimpleForm;
+use msui\Main;
 
 class MainUIReceive
 {

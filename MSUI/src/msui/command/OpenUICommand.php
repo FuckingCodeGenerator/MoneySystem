@@ -9,7 +9,7 @@ use pocketmine\utils\TextFormat;
 use metowa1227\moneysystem\api\core\API;
 use msui\Main;
 use msui\event\form\MainUIReceive;
-use jojoe77777\FormAPI\SimpleForm;
+use msui\jojoe77777\FormAPI\SimpleForm;
 
 class OpenUICommand extends Command
 {

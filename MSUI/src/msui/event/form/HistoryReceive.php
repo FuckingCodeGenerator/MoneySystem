@@ -1,11 +1,10 @@
 <?php
 namespace msui\event\form;
 
-use pocketmine\Server;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
-use jojoe77777\FormAPI\CustomForm;
 use metowa1227\moneysystem\api\core\API;
+use msui\jojoe77777\FormAPI\CustomForm;
 use msui\Main;
 
 class HistoryReceive
