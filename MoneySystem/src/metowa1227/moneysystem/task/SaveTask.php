@@ -5,15 +5,30 @@ use pocketmine\scheduler\Task;
 use pocketmine\Server;
 use metowa1227\moneysystem\Main;
 
+/**
+ * 自動セーブのリピーティングタスク
+ */
 class SaveTask extends Task
 {
+	/**
+	 * Undocumented function
+	 *
+	 * @param Main $main
+	 * @param boolean $announce 自動セーブ時にアナウンスするかどうか
+	 */
 	public function __construct(Main $main, bool $announce)
 	{
 		$this->owner = $main;
 		$this->announce = $announce;
 	}
 
-	public function onRun(int $tick) : void
+	/**
+	 * 自動セーブを実行
+	 *
+	 * @param integer $tick
+	 * @return void
+	 */
+	public function onRun(int $tick): void
 	{
 		$api = $this->owner->getAPI();
 		$result = $this->owner->getAPI()->save();

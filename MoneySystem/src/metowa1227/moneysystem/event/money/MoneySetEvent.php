@@ -2,8 +2,6 @@
 namespace metowa1227\moneysystem\event\money;
 
 use pocketmine\event\Cancellable;
-use pocketmine\Server;
-use pocketmine\Player;
 use metowa1227\moneysystem\event\player\PlayerEvent;
 
 class MoneySetEvent extends PlayerEvent implements Cancellable

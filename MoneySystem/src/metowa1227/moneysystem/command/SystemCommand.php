@@ -6,6 +6,9 @@ use pocketmine\command\CommandSender;
 
 use metowa1227\moneysystem\api\core\API;
 
+/**
+ * '/moneysystem'コマンド
+ */
 class SystemCommand extends Command
 {
     public function __construct()

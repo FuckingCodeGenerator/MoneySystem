@@ -5,13 +5,15 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use metowa1227\moneysystem\api\core\API;
 
+/**
+ * プレイヤーがサーバーに参加したときに発生するイベントハンドラ
+ */
 class JoinEvent implements Listener
 {
     public function onJoin(PlayerJoinEvent $event)
     {
-        $api = API::getInstance();
-        $player = $event->getPlayer();
-        $name = $player->getName();
-        $api->createAccount($player);
+        // アカウントを作成する
+        // 関数側でアカウントが存在するかなどの処理をしてくれるので丸投げ
+        API::getInstance()->createAccount($event->getPlayer());
     }
 }

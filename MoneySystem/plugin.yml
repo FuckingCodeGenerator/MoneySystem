@@ -1,7 +1,7 @@
 name: MoneySystem
 main: metowa1227\moneysystem\Main
-version: 13.31
-api: 3
+version: 13.40
+api: 3.9.5
 author: metowa1227
 description: Simple and simple economic system
 prefix: §aMoneySystem Core§r

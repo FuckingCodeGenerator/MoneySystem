@@ -3,178 +3,162 @@ namespace metowa1227\moneysystem\api\core;
 
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\Config;
-use pocketmine\OfflinePlayer;
 use pocketmine\Server;
 use pocketmine\Player;
-use metowa1227\moneysystem\api\listener\Listener;
-use metowa1227\moneysystem\api\listener\Types;
 use metowa1227\moneysystem\Main;
-use metowa1227\moneysystem\api\processor\GetName;
-use metowa1227\moneysystem\api\processor\Check;
+use metowa1227\moneysystem\api\listener\Listener;
+use metowa1227\moneysystem\api\traits\GetNameTrait;
+use metowa1227\moneysystem\api\traits\CheckMoneyTrait;
 use metowa1227\moneysystem\event\money\MoneyChangeEvent;
 use metowa1227\moneysystem\event\money\MoneyIncreaseEvent;
 use metowa1227\moneysystem\event\money\MoneyReduceEvent;
 use metowa1227\moneysystem\event\money\MoneySetEvent;
 
-class API implements Listener, Types
+/**
+ * MoneySystem のAPIクラスです
+ * プラグイン類はこのクラスへアクセスします
+ */
+class API implements Listener
 {
-    use GetName, Check;
-
-    /**
-     * 言語データベース用の色データ
-     *
-     * @var string
-    */
-    private $colorTag = [
-        "[COLOR: BLACK]",
-        "[COLOR: DARK_BLUE]",
-        "[COLOR: DARK_GREEN]",
-        "[COLOR: DARK_AQUA]",
-        "[COLOR: DARK_RED]",
-        "[COLOR: DARK_PURPLE]",
-        "[COLOR: GOLD]",
-        "[COLOR: GRAY]",
-        "[COLOR: DARK_GRAY]",
-        "[COLOR: BLUE]",
-        "[COLOR: GREEN]",
-        "[COLOR: AQUA]",
-        "[COLOR: RED]",
-        "[COLOR: LIGHT_PURPLE]",
-        "[COLOR: YELLOW]",
-        "[COLOR: WHITE]",
-        "[COLOR: OBFUSCATED]",
-        "[COLOR: BOLD]",
-        "[COLOR: STRIKETHROUGH]",
-        "[COLOR: UNDERLINE]",
-        "[COLOR: ITALIC]",
-        "[COLOR: RESET]"
-    ];
-
-    /**
-     * 言語データベース用の色データ
-     *
-     * @var string
-    */
-    private $color = [
-        TextFormat::BLACK,
-        TextFormat::DARK_BLUE,
-        TextFormat::DARK_GREEN,
-        TextFormat::DARK_AQUA,
-        TextFormat::DARK_RED,
-        TextFormat::DARK_PURPLE,
-        TextFormat::GOLD,
-        TextFormat::GRAY,
-        TextFormat::DARK_GRAY,
-        TextFormat::BLUE,
-        TextFormat::GREEN,
-        TextFormat::AQUA, 
-        TextFormat::RED,
-        TextFormat::LIGHT_PURPLE,
-        TextFormat::YELLOW,
-        TextFormat::WHITE,
-        TextFormat::OBFUSCATED,
-        TextFormat::BOLD,
-        TextFormat::STRIKETHROUGH,
-        TextFormat::UNDERLINE,
-        TextFormat::ITALIC,
-        TextFormat::RESET
-    ];
+    use GetNameTrait, CheckMoneyTrait;
 
     /** @var API */
     private static $instance = null;
-    /** @var Config */
-    private $dataFile, $lang, $user, $config, $logger;
-    /** @var array */
-    private $lang_all;
-    /** @var array */
-    private $data = null;
+    
+    /** @var \AttachableThreadedLogger */
+    private $logger;
 
-    public function __construct(Main $system)
+    /** @var Main */
+    private $mainSystem;
+
+    /**
+     * $dataFile アカウントの保存ファイル
+     * $lang     言語ファイル
+     * $config   設定ファイル
+     *
+     * @var Config
+     */
+    private $dataFile, $lang, $config;
+
+    /**
+     * 言語を配列に格納したもの
+     *
+     * @var array [LangKey => Text]
+     */
+    private $langArray;
+
+    /**
+     * アカウントを配列に格納したもの
+     *
+     * @var array [PlayerName => Money]
+     */
+    private $accountDataArray = null;
+
+    /**
+     * API のコンストラクタ
+     *
+     * @param Main $mainSystem
+     */
+    public function __construct(Main $mainSystem)
     {
-        $this->system = $system;
-        $this->dataFile = new Config($system->getDataFolder() . "Accounts.yml", Config::YAML);
-        $this->data = $this->dataFile->getAll();
-        $this->lang = new Config($system->getDataFolder() . "Language.yml", Config::YAML);
-        $this->user = new Config($system->getDataFolder() . "UserList.yml", Config::YAML);
-        $this->config = new Config($system->getDataFolder() . "Config.yml", Config::YAML);
-        $this->logger = $system->getLogger();
-        $this->lang_all = $this->lang->getAll();
+        $this->mainSystem = $mainSystem;
+
+        // ファイルを読み込む
+        $this->dataFile = new Config($mainSystem->getDataFolder() . "Accounts.yml", Config::YAML);
+        $this->lang     = new Config($mainSystem->getDataFolder() . "Language.yml", Config::YAML);
+        $this->config   = new Config($mainSystem->getDataFolder() . "Config.yml", Config::YAML);
+
+        // ファイルの内容を配列に格納する
+        $this->logger = $mainSystem->getLogger();
+        $this->accountDataArray = $this->dataFile->getAll();
+        $this->langArray = $this->lang->getAll();
+
         self::$instance = $this;
     }
 
     /**
-     * APIのインスタンスを取得する
+     * 言語データベースから指定されたキーの文章を取得する
+     * [サードパーティー製プラグインからの呼び出しは非推奨]
      *
-     * @return API
-    */
-    public static function getInstance() : self
+     * @param string $key  文章のキー
+     * @param array  $input 文章中のシンボルと差し替えるデータ(存在する場合)
+     * @return string 文章
+     */
+    public function getMessage(string $key, array $input = []): string
     {
-        return self::$instance;
-    }
-
-    public function getMessage(string $key, array $input = []) : string
-    {
+        // キーが存在しない場合、エラー文章を返します
         if (!$this->lang->exists($key)) {
-            return TextFormat::RED . "The character string \"" . TextFormat::YELLOW . $key . TextFormat::RED . "\" could not be found from the search result database.";
+            return TextFormat::RED . "The character string \"" . TextFormat::YELLOW . $key . TextFormat::RED
+            . "\" could not be found from the search result database.";
         }
-        $message = str_replace(["[EOLL]", "[EOL]"], ["\n", "\n" . str_pad(" ", 33)], $this->lang_all[$key]);
-        $message = str_replace($this->colorTag, $this->color, $message);
+        
+        // 改行と色データを適用
+        $message = str_replace(["[EOLL]", "[EOL]"], ["\n", "\n" . str_pad(" ", 33)], $this->langArray[$key]);
+        $message = str_replace(self::colorTag, self::color, $message);
+
+        // 文章中のシンボルとインプットされたデータを差し替える
         if (!empty($input)) {
             $count = (int) count($input);
             for ($i = 0; $i < $count; ++$i) {
                 $search[] = '[TAG: NO.' . $i . ']';
                 $replacement[] = $input[$i];
             }
-            return str_replace($search, $replacement, $message);
-        } else {
-            return $message;
+            $message = str_replace($search, $replacement, $message);
         }
+
+        return $message;
+    }
+
+    /**
+     * APIのインスタンスを取得する
+     *
+     * @return self
+     */
+    public static function getInstance(): self
+    {
+        return self::$instance;
     }
 
     /**
      * プレイヤーの所持金を取得する
      *
-     * @param string | Player  $player
-     * @param bool             $array  [アカウントごと返すか]
-     *
-     * @return null | int | array
-    */
-    public function get($player, bool $array = false)
+     * @param string|Player $player
+     * @return null|int
+     */
+    public function get($player)
     {
         $this->getName($player);
         if (!$this->exists($player)) {
             return null;
         }
-        return $array ? $this->data[$player] : $this->data[$player];
+        return $this->accountDataArray[$player];
     }
 
     /**
      * 全プレイヤーの所持金を取得する
      *
-     * @param bool $key [プレイヤー名のみ返すか]
-     *
-     * @return array | null     配列: [プレイヤー名, 所持金]
-    */
-    public function getAll(bool $key = false) : ?array
+     * @param boolean $key プレイヤー名のみを返します
+     * @return array|null
+     */
+    public function getAll(bool $key = false): ?array
     {
+        // GetNameTrait
         $this->getName($player);
+
+        // プレイヤー名のみ返す
         if ($key) {
-            return array_keys($this->data);
+            return array_keys($this->accountDataArray);
         }
 
-        $result = [];
-        foreach ($this->data as $player => $data) {
-            $result[$player] = $data;
-        }
-        return $result;
+        return $this->accountDataArray;
     }
 
     /**
-     * 通貨を取得
+     * お金の通貨を取得する
      *
      * @return string
-    */
-    public function getUnit() : string
+     */
+    public function getUnit(): string
     {
         return $this->config->get("unit");
     }
@@ -183,34 +167,30 @@ class API implements Listener, Types
      * データを保存する
      *
      * @return bool
-    */
-    public function save() : bool
+     */
+    public function save(): bool
     {
-        $this->dataFile->setAll($this->data);
+        $this->dataFile->setAll($this->accountDataArray);
         return $this->dataFile->save();
     }
 
     /**
-     * @param Player | string | array  $player
-     * @param int                      $money
-     * @param string                   $reason
-     * @param string                   $by [caller]
+     * 所持金操作のプレイヤー引数に配列が渡された場合の処理
      *
+     * @param array   $players
+     * @param integer $money
+     * @param string  $reason
+     * @param string  $calledBy
+     * @param integer $type
      * @return void
      */
-    private function processArray($players, $money, $reason, $by, $type) : void
+    private function processArray(array $players, int $money, string $reason, string $calledBy, int $type): void
     {
         foreach ($players as $player) {
             switch ($type) {
-                case self::TYPE_INCREASE:
-                    $this->increase($player, $money, $by, $reason);
-                    break;
-                case self::TYPE_REDUCE:
-                    $this->reduce($player, $money, $by, $reason);
-                    break;
-                case self::TYPE_SET:
-                    $this->set($player, $money, $by, $reason);
-                    break;
+                case self::TYPE_INCREASE: $this->increase($player, $money, $calledBy, $reason); break;
+                case self::TYPE_REDUCE: $this->reduce($player, $money, $calledBy, $reason); break;
+                case self::TYPE_SET: $this->set($player, $money, $calledBy, $reason); break;
             }
         }
     }
@@ -218,29 +198,40 @@ class API implements Listener, Types
     /**
      * プレイヤーの所持金を設定する
      *
-     * @param Player | string | array  $player
-     * @param int                      $money
-     * @param string                   $by [caller]
-     * @param string                   $reason
-     *
-     * @return bool
-    */
-    public function set($player, int $money, string $by = "unknown", string $reason = "none") : bool
+     * @param string|array|Player $player
+     * @param integer $money
+     * @param string  $calledBy
+     * @param string  $reason
+     * @return boolean
+     */
+    public function set($player, int $money, string $calledBy = "unknown", string $reason = "none"): bool
     {
+        // プレイヤー引数が配列だったら
         if (is_array($player)) {
-            $this->processArray($player, $money, $reason, $by, self::TYPE_SET);
+            $this->processArray($player, $money, $reason, $calledBy, self::TYPE_SET);
         } else {
+            // GetNameTrait
             $this->getName($player);
+
+            // アカウントが存在しない場合
             if (!$this->exists($player)) {
                 return false;
             }
-            Server::getInstance()->getPluginManager()->callEvent($result = new MoneyChangeEvent($player, $money, $reason, $by, self::TYPE_SET, $this->get($player)));
-            Server::getInstance()->getPluginManager()->callEvent($result2 = new MoneySetEvent($player, $money, $reason, $by, $this->get($player)));
-            if (!$result->isCancelled() && !$result2->isCancelled()) {
+
+            // MoneyChangeEventとMoneySetEventをコールする
+            $changeEvent = new MoneyChangeEvent($player, $money, $reason, $calledBy, self::TYPE_SET, $this->get($player));
+            $setEvent = new MoneySetEvent($player, $money, $reason, $calledBy, $this->get($player));
+            Server::getInstance()->getPluginManager()->callEvent($changeEvent);
+            Server::getInstance()->getPluginManager()->callEvent($setEvent);
+            
+            // 2つのイベントがキャンセルされなければ操作
+            if (!$changeEvent->isCancelled() && !$setEvent->isCancelled()) {
+                // CheckMoneyTrait
                 $money = $this->check($money);
-                $this->data[$player] = $money;
+                $this->accountDataArray[$player] = $money;
                 return true;
             }
+
             return false;
         }
     }
@@ -248,33 +239,44 @@ class API implements Listener, Types
     /**
      * プレイヤーの所持金を増やす
      *
-     * @param Player | string  $player
-     * @param int              $money
-     * @param string           $reason
-     * @param string           $by [caller]
-     *
-     * @return bool
-    */
-    public function increase($player, int $money, string $by = "unknown", string $reason = "none") : bool
+     * @param string|array|Player $player
+     * @param integer $money
+     * @param string  $calledBy
+     * @param string  $reason
+     * @return boolean
+     */
+    public function increase($player, int $money, string $calledBy = "unknown", string $reason = "none"): bool
     {
+        // プレイヤー引数が配列だったら
         if (is_array($player)) {
-            $this->processArray($player, $money, $reason, $by, self::TYPE_INCREASE);
+            $this->processArray($player, $money, $reason, $calledBy, self::TYPE_INCREASE);
         } else {
+            // GetNameTrait
             $this->getName($player);
+
+            // アカウントが存在しない場合
             if (!$this->exists($player)) {
                 return false;
             }
-            Server::getInstance()->getPluginManager()->callEvent($result = new MoneyChangeEvent($player, $money, $reason, $by, self::TYPE_INCREASE, $this->get($player)));
-            Server::getInstance()->getPluginManager()->callEvent($result2 = new MoneyIncreaseEvent($player, $money, $reason, $by, $this->get($player)));
-            if (!$result->isCancelled() && !$result2->isCancelled()) {
+
+            // MoneyChangeEventとMoneyIncreaseEventをコールする
+            $changeEvent = new MoneyChangeEvent($player, $money, $reason, $calledBy, self::TYPE_INCREASE, $this->get($player));
+            $increaseEvent = new MoneyIncreaseEvent($player, $money, $reason, $calledBy, $this->get($player));
+            Server::getInstance()->getPluginManager()->callEvent($changeEvent);
+            Server::getInstance()->getPluginManager()->callEvent($increaseEvent);
+
+            // 2つのイベントがキャンセルされなければ操作
+            if (!$changeEvent->isCancelled() && !$increaseEvent->isCancelled()) {
                 $money = $this->get($player) + $money;
                 if ($money > Main::MAX_MONEY) {
                     $money = Main::MAX_MONEY;
                 }
+                // CheckMoneyTrait
                 $money = $this->check($money);
-                $this->data[$player] = $money;
+                $this->accountDataArray[$player] = $money;
                 return true;
             }
+
             return false;
         }
     }
@@ -282,30 +284,41 @@ class API implements Listener, Types
     /**
      * プレイヤーの所持金を減らす
      *
-     * @param Player | string  $player
-     * @param int              $money
-     * @param string           $reason
-     * @param string           $by [caller]
-     *
-     * @return bool
-    */
-    public function reduce($player, int $money, string $by = "unknown", string $reason = "none") : bool
+     * @param string|array|Player $player
+     * @param integer $money
+     * @param string  $calledBy
+     * @param string  $reason
+     * @return boolean
+     */
+    public function reduce($player, int $money, string $calledBy = "unknown", string $reason = "none"): bool
     {
+        // プレイヤー引数が配列だったら
         if (is_array($player)) {
-            $this->processArray($player, $money, $reason, $by, self::TYPE_REDUCE);
+            $this->processArray($player, $money, $reason, $calledBy, self::TYPE_REDUCE);
         } else {
+            // GetNameTrait
             $this->getName($player);
+
+            // アカウントが存在しない場合
             if (!$this->exists($player)) {
                 return false;
             }
-            Server::getInstance()->getPluginManager()->callEvent($result = new MoneyChangeEvent($player, $money, $reason, $by, self::TYPE_REDUCE, $this->get($player)));
-            Server::getInstance()->getPluginManager()->callEvent($result2 = new MoneyReduceEvent($player, $money, $reason, $by, $this->get($player)));
-            if (!$result->isCancelled() && !$result2->isCancelled()) {
+            
+            // MoneyChangeEventとMoneyReduceEventをコールする
+            $changeEvent = new MoneyChangeEvent($player, $money, $reason, $calledBy, self::TYPE_REDUCE, $this->get($player));
+            $reduceEvent = new MoneyReduceEvent($player, $money, $reason, $calledBy, $this->get($player));
+            Server::getInstance()->getPluginManager()->callEvent($changeEvent);
+            Server::getInstance()->getPluginManager()->callEvent($reduceEvent);
+
+            // 2つのイベントがキャンセルされなければ操作
+            if (!$changeEvent->isCancelled() && !$reduceEvent->isCancelled()) {
                 $money = $this->get($player) - $money;
+                // CheckMoneyTrait
                 $money = $this->check($money);
-                $this->data[$player] = $money;
+                $this->accountDataArray[$player] = $money;
                 return true;
             }
+
             return false;
         }
     }
@@ -315,17 +328,20 @@ class API implements Listener, Types
      *
      * @return bool
     */
-    public function backup() : bool
+    public function backup(): bool
     {
-        $dir = $this->system->getDataFolder();
-        if (!is_dir($dir)) {
-            return false;
-        }
+        $dir = $this->mainSystem->getDataFolder();
+
+        // 保存ディレクトリが存在しない場合新規作成
         if (!is_dir(Server::getInstance()->getDataPath() . "MoneySystemBackupFiles")) {
             @mkdir(Server::getInstance()->getDataPath() . "MoneySystemBackupFiles");
         }
+
+        // 保存先フォルダを新規作成
         @mkdir(Server::getInstance()->getDataPath() . "MoneySystemBackupFiles/" . date("D_M_j-H.i.s-T_Y", time()));
         $path = Server::getInstance()->getDataPath() . "MoneySystemBackupFiles/" . date("D_M_j-H.i.s-T_Y", time());
+
+        // ファイルのコピーを実行
         $file = $path . "\\Accounts[Backup].yml";
         try {
             if (!copy($dir . "Accounts.yml", $file)) {
@@ -333,6 +349,7 @@ class API implements Listener, Types
             }
         } catch (\Exception $error) {
             $this->logger->error($this->getMessage("backup-failed"));
+            $this->logger->error($error->getMessage());
             return false;
         }
         $this->logger->info($this->getMessage("backup-success"));
@@ -340,21 +357,21 @@ class API implements Listener, Types
     }
 
     /**
-     * 設定内容を取得する
+     * 設定の内容を取得する
      *
      * @return array
     */
-    public function getSettings() : array
+    public function getSettings(): array
     {
         return $this->config->getAll();
     }
 
     /**
-     * MoneySystemの情報を取得する
+     * MoneySystemのバージョン情報を取得する
      *
      * @return float
     */
-    public function getVersion() : float
+    public function getVersion(): float
     {
         return Main::PLUGIN_VERSION;
     }
@@ -364,7 +381,7 @@ class API implements Listener, Types
      *
      * @return int
     */
-    public function getDefaultMoney() : int
+    public function getDefaultMoney(): int
     {
         return $this->getSettings()["default-money"];
     }
@@ -372,11 +389,10 @@ class API implements Listener, Types
     /**
      * デフォルトの所持金を設定する
      *
-     * @param int $money
-     *
+     * @param integer $money
      * @return bool
     */
-    public function setDefaultMoney(int $money) : bool
+    public function setDefaultMoney(int $money): bool
     {
         $money = $this->check($money);
         $this->config->set("default-money", $money);
@@ -387,50 +403,58 @@ class API implements Listener, Types
     /**
      * アカウントを作成する
      *
-     * @param Player | string  $player
-     * @param int              $money
-     *
-     * @return bool
-    */
-    public function createAccount($player, int $money = -1) : bool
+     * @param string|Player $player
+     * @param integer $money
+     * @return boolean
+     */
+    public function createAccount($player, int $money = -1): bool
     {
+        // GetMoneyTrait
         $this->getName($player);
+
+        // 初期所持金に指定がない場合, デフォルト金額を設定
         if ($money < 0) {
             $money = $this->getDefaultMoney();
         }
+
+        // アカウントが存在しない場合に作成
         if (!$this->exists($player)) {
-            $this->data[$player] = $money;
+            $this->accountDataArray[$player] = $money;
         }
+
         return true;
     }
 
     /**
      * アカウントを削除する
      *
-     * @param Player | string  $player
-     *
-     * @return bool
-    */
-    public function removeAccount($player) : bool
+     * @param string|Player $player
+     * @return boolean
+     */
+    public function removeAccount($player): bool
     {
+        // GetMoneyTrait
         $this->getName($player);
+
+        // アカウントが存在しない場合
         if (!$this->exists($player)) {
             return false;
         }
-        unset($this->data[$player]);
+
+        unset($this->accountDataArray[$player]);
         return true;
     }
 
     /**
-     * プレイヤーのアカウントが存在するかを調べる
+     * アカウントが存在するかどうか
      *
-     * @param Player | string  $player
-     * 
-     * @return bool
-    */
-    public function exists($player) : bool
+     * @param string|Player $player
+     * @return boolean
+     */
+    public function exists($player): bool
     {
+        // GetNameTrait
         $this->getName($player);
-        return isset($this->data[$player]);
+        return isset($this->accountDataArray[$player]);
     }
 }

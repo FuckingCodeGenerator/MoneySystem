@@ -3,11 +3,10 @@ namespace metowa1227\moneysystem\event\player;
 
 use pocketmine\event\Event;
 use pocketmine\Server;
-use pocketmine\Player;
 
 abstract class PlayerEvent extends Event
 {
-	/* @var PlayerName */
+	/* @var string */
 	protected $player;
 
 	public function getPlayer()

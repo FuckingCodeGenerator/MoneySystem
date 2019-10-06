@@ -2,11 +2,11 @@
 namespace msui;
 
 use pocketmine\utils\Config;
-use metowa1227\moneysystem\api\processor\GetName;
+use metowa1227\moneysystem\api\traits\GetNameTrait;
 
 class Pay
 {
-	use GetName;
+	use GetNameTrait;
 
 	/** @var Config */
 	private static $tmp;
