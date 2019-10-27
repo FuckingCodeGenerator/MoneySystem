@@ -12,10 +12,10 @@ A plug-in that adds economic elements to PocketMine-MP.<br>
 ---- | ---- | ----
 | moneysystem | Displays MoneySystem information | /moneysystem |
 ## For developers
-You can access MoneySystem using ```\moneysystem\api\core\API::getInstance()```
+You can access MoneySystem using ```\metowa1227\moneysystem\api\core\API::getInstance()```
 ### Example
 ```php
-// use moneysystem\api\core\API;
+// use metowa1227\moneysystem\api\core\API;
 $result = API::getInstance()->increase($player, $amount);
 ```
 ***
@@ -29,9 +29,9 @@ $result = API::getInstance()->increase($player, $amount);
 ---- | ---- | ----
 | moneysystem | MoneySystem の情報を表示します | /moneysystem |
 ## 開発者へ
-```\moneysystem\api\core\API::getInstance()``` でAPIにアクセスできます。
+```\metowa1227\moneysystem\api\core\API::getInstance()``` でAPIにアクセスできます。
 ### 使用例
 ```php
-// use moneysystem\api\core\API;
+// use metowa1227\moneysystem\api\core\API;
 $result = API::getInstance()->increase($player, $amount);
 ```
