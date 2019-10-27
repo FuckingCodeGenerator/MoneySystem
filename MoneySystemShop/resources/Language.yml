@@ -1,0 +1,44 @@
+wrong-format: '[COLOR: YELLOW]看板の書式が間違っています'
+
+form-header: 'アイテムSHOP の編集画面です[EOLL]必要な情報を入力して「送信」を押してください[EOLL]あなたが手に持っているアイテムIDは [TAG: NO.0] : [TAG: NO.1] です'
+form-format-wrong: '[EOLL][COLOR: YELLOW]入力された情報の形式が間違っています[EOLL]価格と売価は半角整数で入力し, 0以上に設定してください'
+form-itemId: 'アイテムID'
+form-skip-shop: 'SHOP の作成をスキップする'
+form-skip-sell: 'SELL の作成をスキップする'
+form-price-shop: '1つあたりの値段'
+form-price-sell: '1つ当たりの売価'
+form-comment: 'コメント'
+form-disable: 'このSHOP看板を無効化する[EOLL](OFFにするとプレイヤーは看板をタッチしてもアイテムの売買ができません)'
+
+form1-content: 'このSHOPは購入と売却の両方が可能です[EOLL]どちらかを選択してください'
+form1-button1: 'アイテムの購入'
+form1-button2: 'アイテムの売却'
+
+form2-header: 'MoneySystemShop の購入画面です[EOLL]必要な情報を入力して「送信」を押してください[EOLL]あなたは現在[TAG: NO.0]を[TAG: NO.1]個所持しています'
+form2-format-wrong: '[EOLL][COLOR: YELLOW]入力された情報の形式が間違っています[EOLL]購入する個数は半角数字で入力し, 0以上に設定してください'
+form2-price: '[TAG: NO.0]の1つあたりの価格は[TAG: NO.1][TAG: NO.2]です'
+form2-count: '購入する個数'
+
+form3-content: '[TAG: NO.0]を[TAG: NO.1][TAG: NO.2]で購入します[EOLL]本当によろしいですか?'
+form3-button1: '購入を確定'
+form3-button2: 'キャンセル'
+
+form4-header: 'MoneySystemShop の売却画面です[EOLL]必要な情報を入力して「送信」を押してください[EOLL]あなたは現在[TAG: NO.0]を[TAG: NO.1]個所持しています'
+form4-format-wrong: '[EOLL][COLOR: YELLOW]入力された情報の形式が間違っています[EOLL]売却する個数は半角数字で入力し, 0以上に設定してください'
+form4-price: '[TAG: NO.0]の1つあたりの売価は[TAG: NO.1][TAG: NO.2]です'
+form4-count: '売却する個数'
+
+form5-content: '[TAG: NO.0]を[TAG: NO.1][TAG: NO.2]で売価します[EOLL]本当によろしいですか?'
+form5-button1: '売却を確定'
+form5-button2: 'キャンセル'
+
+shop-created: 'SHOP を変更/作成しました'
+shop-disabled: '[COLOR: YELLOW]このSHOPは管理者により無効化されています'
+
+inventory-full: '[COLOR: YELLOW]インベントリの容量が不足しています'
+lack-money: '[COLOR: YELLOW]所持金が不足しています'
+purchased-item: 'アイテムを購入しました'
+sold-item: 'アイテムを売却しました'
+lack-item: '[COLOR: YELLOW]アイテムの個数が不足しています'
+
+destroyed-sign: 'SHOP 看板を破壊しました'

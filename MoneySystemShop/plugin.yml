@@ -1,5 +1,8 @@
 name: MoneySystemShop
-version: 4.43
-api: 3
-main: MoneySystemShop\MoneySystemShop
+main: metowa1227\msshop\Main
+version: 5.0
+api: 3.9.6
 author: metowa1227
+description: MoneySystem で使用可能なショッププラグイン
+website: https://github.com/FuckingCodeGenerator/MoneySystem
+depend: MoneySystem
