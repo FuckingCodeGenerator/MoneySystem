@@ -32,9 +32,19 @@ class FirstPosSetCommand extends Command
             $sender->sendMessage($this->owner->getMessage("in-game-only"));
             return false;
         }
-        if (\count($this->landManager->getLands($sender)) >= $this->owner->getConfigArgs()["limit"]) {
-            $sender->sendMessage(Main::getMessage("land-limit-buy"));
-            return false;
+        if (in_array($sender->getLevel()->getFolderName(), $this->owner->getConfigArgs()["impossible-protection"])) {
+            if (!$sender->isOp()) {
+                $sender->sendMessage(Main::getMessage("impossible-protection"));
+                return false;
+            }
+        }
+        if ($this->owner->getConfigArgs()["limit"] !== -1) {
+            if (\count($this->landManager->getLands($sender)) >= $this->owner->getConfigArgs()["limit"]) {
+                if (!$sender->isOp()) {
+                    $sender->sendMessage(Main::getMessage("land-limit-buy"));
+                    return false;
+                }
+            }
         }
 
         $name = $sender->getName();

@@ -1,80 +1,97 @@
 ##MoneySystemland's language databse file.
 
-in-game-only: このコマンドはコンソールから実行できません。
+in-game-only: "このコマンドはプレイヤーからのみ実行できます"
 
-s-saved: 第一ポジションを設定しました。
-e-saved: 第二ポジションを設定しました。
-buy-confirm: 価格は--UNIT----PRICE--です。/landコマンドから土地を購入できます。
-s-not-set: 第一ポジションが設定されていません。
-level-diff: 第一ポジションで設定したワールドと異なります。
-already: この土地は--OWNER--が所有しています。
+lack-money: "所持金が[TAG: NO.0][TAG: NO.1]不足しています"
 
-scope: 土地保護をする範囲を設定してください。
-scope2: 範囲が選択されていません。
-buy-ready: 選択した範囲の土地を--UNIT----PRICE--で購入します。
-buy-cancelled: 土地購入をキャンセルしました。(選択範囲は削除されません。)
+enter-number: "データは数字で入力してください"
+land-not-found: "土地が見つかりませんでした"
+particle-active: "パーティクルを表示しました ([TAG: NO.0]秒間)"
+task-already-running: "既にパーティクルを表示しています"
 
-bought-land: 土地を購入しました。
+must-owner-or-invitee: "使用するにはこの土地の所有者か招待者である必要があります"
 
-disable-levels: このワールドでは土地購入ができません。
-land-limit: 最大保持可能土地数に達しています。
-no-money: 所持金が不足しています。
+first-pos-saved: "最初の地点を設定しました"
+first-pos-not-set: "[COLOR: YELLOW]最初の地点が設定されていません"
+second-pos-not-set: "[COLOR: YELLOW]最後の地点が設定されていません"
+first-second-diff-level: "[COLOR: YELLOW]最初の地点とワールドが違います"
+range-of-land-not-set: "[COLOR: YELLOW]購入する土地の範囲が未設定です"
+impossible-protection: "[COLOR: YELLOW]このワールドでは土地を購入できません"
+land-limit-buy: "[COLOR: YELLOW]あなたの所有する土地数がサーバーで設定されている所有可能最大数に到達したため、これ以上購入することができません"
+land-limit-give: "[COLOR: YELLOW]対象のプレイヤーの所有する土地数がサーバーで設定されている所有可能最大数に到達したため、土地を譲渡することができません"
 
-can-not-edit: "ここああなたの土地ではありません。 所有者: --OWNER-- ID: --ID--"
-need-buy: この土地を編集するには土地を購入してください。
+buyform-select-modal-title: "土地の購入"
+buyform-select-modal-content: "選択された土地を[TAG: NO.0][TAG: NO.1]で購入します\n今購入しない場合は、\"購入しない\"を選択して後ほど\"land\"コマンドを実行し、土地の購入をしてください"
+buyform-select-modal-button1: "土地の購入"
+buyform-select-modal-button2: "購入しない"
 
-cancel-success: 土地購入をキャンセルしました。
+land-already-bought: "あなたが購入しようとした土地には[TAG: NO.0]が既に購入している土地が含まれています (土地番号: #[TAG: NO.1])"
+land-range-not-set: "購入する土地の範囲が設定されていません"
+bought-land: "土地を購入しました"
+land-buy-failed: "土地の購入に失敗しました"
 
-tp-disabled: このサーバーではテレポート機能が有効化されていません。
-tp-select: テレポート先を選択してください。 (緑 = テレポート可能, 赤 = テレポート不可能)
-tp-success: テレポートが完了しました。
-tp-offline: テレポート先の土地がオフラインです。
-tp-id-not-set: テレポート先のIDが入力されていません。
-tp-dest-not-found: テレポート先が見つかりませんでした。
+here-result-no-owner: "この土地は誰も所有していません"
+here-result: "この土地は[TAG: NO.0]が所有しています(土地番号 #[TAG: NO.1])"
 
-sell-select: 売却する土地を選択してください。 (売却値は表示価格の2/1です)
-sell-ready: "土地(ID: --ID--)を--UNIT----PRICE--で売却します。"
-sell-success: "土地(ID: --ID--)を--UNIT----PRICE--で売却しました。"
+buyform-buy-confirm-title: "購入の確認"
+buyform-buy-confirm-content: "土地を[TAG: NO.0][TAG: NO.1]で購入します\n本当によろしいですか?"
+buyform-buy-confirm-button1: "購入"
+buyform-buy-confirm-button2: "キャンセル"
 
-no-owner: この土地は誰も所有していません。
-info: "所有者: --OWNER-- ID: --ID-- 購入価格: --UNIT----PRICE--"
+teleport-content: "テレポート先を選択してください"
+teleport-add-destination: "テレポート先を追加"
+teleport-list-own-land: "あなたの土地 [土地番号: #[TAG: NO.0]]"
+teleport-list-added-land: "[所有者: [TAG: NO.0] 土地番号: #[TAG: NO.1]]"
 
-give-select: 譲渡する土地を選択してください。
-give-target: 譲渡する相手を入力してください。
-give-id: 譲渡する土地のIDを入力してください。
-give-invite: 譲渡した後に自分を土地共有リストに含める
-give-ready: "土地(ID: --ID--)を--PLAYER--に譲渡します。(土地共有: --INVITE--)"
-give-success: "土地(ID: --ID--)を--PLAYER--に譲渡しました。"
-transfer: 譲渡する
+add-teleport-label: "テレポート先を追加します\n土地番号かプレイヤー名を検索して、土地を追加してください"
+add-teleport-input-label: "土地番号かプレイヤー名で検索\n(ヒント: ハッシュタグを使うことで土地番号のみの検索ができます)"
+add-teleport-select-label: "追加する土地を選択してください"
+add-teleport-select-title: "検索結果 ([TAG: NO.0]件)"
+teleport-is-not-enabled: "このサーバーではテレポートが無効化されています"
+unauthorized-teleport: "このサーバーではテレポートはOPのみ可能です"
+teleport-failed: "テレポートに失敗しました (テレポート可能なスペースがありません)"
+teleport-success: "テレポートに成功しました"
 
-not-owner: この土地はあなたの土地ではありません。
+player-selector-header: "対象のプレイヤーを選択してください\nプレイヤーリストから選択するか、プレイヤー名の一部を入力して検索してください"
+land-selector-header: "対象の土地を選択してください"
+my-lands-dropdown: "あなたの所有する土地"
+online-players: "オンラインプレイヤー"
+invitee-players: "招待者一覧"
+search-player: "プレイヤーを検索"
+dropdown-default: "選択してください"
+land-selector-dropdown-text: "土地番号: #[TAG: NO.0] 購入額: [TAG: NO.1][TAG: NO.2]"
+player-search-content: "プレイヤーの検索結果: [TAG: NO.0]件\n対象のプレイヤーを選択してください"
 
-list-title: "あなたの所有している土地:"
+give-land-content: "土地を[TAG: NO.0]に譲渡します\n譲渡すると土地の所有権は[TAG: NO.0]に移行され、あなたは土地を編集することができなくなります\nこの操作は取り消すことができません\n本当によろしいですか?"
+give-success: "土地を譲渡しました"
 
-invite-select: 土地共有をする土地を選択してください。
-invite-target: 土地を共有する相手を入力してください。
-invite-ready: "土地(ID: --ID--)に--PLAYER--を招待します。"
-invite-success: "土地(ID: --ID--)に--PLAYER--を招待しました。"
+invite-menu-content: "土地の招待の管理をします"
+invite-menu-add: "招待者の追加"
+invite-menu-remove: "招待者の削除"
+invite-menu-list: "招待者一覧"
+invite-add-land-content: "土地に[TAG: NO.0]を招待します\n招待されたプレイヤーは、許可なくあなたの土地を自由に編集することができるようになります\n本当によろしいですか?"
+invite-remove-land-content: "[TAG: NO.0]の土地番号 #[TAG: NO.1]への招待を削除します\n本当によろしいですか?"
+invite-add-success: "[TAG: NO.0]を土地番号 #[TAG: NO.1]に招待しました"
+invite-remove-success: "[TAG: NO.0]の招待を削除しました"
+invite-list-content: "土地番号 #[TAG: NO.0]の招待者一覧です"
 
-invite-remove-select: 土地共有を解除する土地のIDを入力してください。
-invite-remove-target: 土地共有を解除する相手を選択してください。
-unvite-ready: "土地(ID: --ID--)の土地共有リストから--PLAYER--を削除します。"
-invite-remove-success: "土地(ID: --ID--)の土地共有リストから--PLAYER--を削除しました。"
+sellform-sell-confirm-title: "売却の確認"
+sellform-sell-confirm-content: "土地を[TAG: NO.0][TAG: NO.1]で売却します\n本当によろしいですか?"
+sellform-sell-confirm-button1: "売却"
+sellform-sell-confirm-button2: "キャンセル"
+sell-failed: "土地の売却に失敗しました"
+sell-success: "土地の売却が完了しました"
 
-buy: 購入
-continue: 続行
-sale: 売却
-cancel: キャンセル
-close: 閉じる
-select-lang: 言語の選択
-buy-land: 土地の購入
-buy-stop: 土地購入のキャンセル
-select: 選択してください
-teleport: テレポート
-sell: 土地の売却
-give: 土地の譲渡
-"yes": はい
-"no": いいえ
-list: あなたの土地リスト
-invite: 土地を共有する
-invite-remove: 土地共有を解除する
+requires-land-purchase: "[COLOR: YELLOW]この土地を編集するには、この土地を購入してください"
+land-has-been-purchased: "この土地は[TAG: NO.0]が購入済みです [土地番号: #[TAG: NO.1]]"
+
+button-back: "戻る"
+button-buy: "購入"
+button-teleport: "テレポート"
+button-give: "譲渡"
+button-sell: "売却"
+button-invite: "招待"
+
+yes: "はい"
+no: "いいえ"
+close: "閉じる"

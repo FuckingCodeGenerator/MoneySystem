@@ -12,6 +12,18 @@ class LandTeleporter
 {
     public static function teleportToLand(Player $player, array $land): void
     {
+        if (!Main::getInstance()->getConfigArgs()["teleport"]) {
+            if (!$player->isOp()) {
+                $player->sendMessage(Main::getMessage("teleport-is-not-enabled"));
+                return;
+            }
+        }
+        if (Main::getInstance()->getConfigArgs()["teleport-only-op-allowed"]) {
+            if (!$player->isOp()) {
+                $player->sendMessage(Main::getMessage("unauthorized-teleport"));
+                return;
+            }
+        }
         $minMax = Main::getInstance()->getLandManager()->getMinMaxVec($land);
         $centerX = $minMax[LandManager::X_MAX] - (($minMax[LandManager::X_MAX] - $minMax[LandManager::X_MIN]) / 2);
         $centerZ = $minMax[LandManager::Z_MAX] - (($minMax[LandManager::Z_MAX] - $minMax[LandManager::Z_MIN]) / 2);

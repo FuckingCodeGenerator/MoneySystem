@@ -1,4 +1,4 @@
-##土地のデフォルトの金額 (The price of the world for which the custom price is not set)
+##土地のデフォルトの金額
 default-price: 150
 
 ##土地を識別する際に、Y座標も含める
@@ -9,7 +9,7 @@ price-per-height-block: 50
 ##LandParticleコマンドの有効化
 enable-landparticle-command: true
 
-##ワールド別の土地の金額 (Writing (world name: price))
+##ワールド別の土地の金額 書き方[ワールド名: 金額]
 custom-price: []
 
 ##土地保護ができないワールド

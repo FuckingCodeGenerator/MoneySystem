@@ -31,11 +31,13 @@ class GiveLandForm
             }
 
             $target = Server::getInstance()->getOfflinePlayer($data);
-            if (\count(Main::getInstance()->getLandManager()->getLands($target)) >= Main::getInstance()->getConfigArgs()["limit"]) {
-                $player->sendMessage(Main::getMessage("land-limit-give"));
-                return false;
+            if (Main::getInstance()->getConfigArgs()["limit"] !== -1) {
+                if (\count(Main::getInstance()->getLandManager()->getLands($target)) >= Main::getInstance()->getConfigArgs()["limit"]) {
+                    $player->sendMessage(Main::getMessage("land-limit-give"));
+                    return false;
+                }
             }
-    
+        
             $form = new ModalForm(self::getFunc3($data, $landId));
             $form->setTitle("Give Land");
             $form->setContent(Main::getMessage("give-land-content", [$data]));
