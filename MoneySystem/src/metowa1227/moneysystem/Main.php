@@ -16,14 +16,6 @@ use metowa1227\moneysystem\task\SaveTask;
 class Main extends PluginBase
 {
     /**
-     * @var integer プラグインのバージョン
-     */
-    const PLUGIN_VERSION = 13.40;
-    /**
-     * @var string プラグイン名
-     */
-    const PLUGIN_NAME = 'MoneySystem';
-    /**
      * @var integer 最大所持可能金額
      */
 	const MAX_MONEY = 99999999999;
@@ -52,7 +44,7 @@ class Main extends PluginBase
         // 自動セーブのタスクを起動します
         $this->startTask();
 
-        $this->getLogger()->info($this->api->getMessage("system.startup-compleate", array(self::PLUGIN_VERSION)));
+        $this->getLogger()->info($this->api->getMessage("system.startup-compleate", array($this->getDescription()->getVersion())));
     }
 
     /**
@@ -91,7 +83,7 @@ class Main extends PluginBase
     private function initEvent(): void
     {
         // プレイヤーがサーバーへ参加したときのイベント
-        $this->getServer()->getPluginManager()->registerEvents(new JoinEvent(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new JoinEvent, $this);
     }
 
     /**
@@ -115,11 +107,6 @@ class Main extends PluginBase
     */
     private function displayInfoToConsole(): void
     {
-        // Accounts.yml のファイルサイズを算出
-        $byte = filesize($this->getDataFolder() . "Accounts.yml");
-        $kb = $byte / 1024;
-        $mb = number_format($kb / 1024, 2);
-
         // アカウント数を算出
         if (empty($allData = $this->api->getAll(true))) {
             $count = 0;
@@ -127,7 +114,6 @@ class Main extends PluginBase
             $count = count($allData);
         }
 
-        $this->getLogger()->info("セーブデータのファイル情報: Accounts.yml -> " . $byte . "バイト (" . $kb . "KB) (" . $mb . "MB)");
         $this->getLogger()->info($count . " 個のアカウントが使用可能です");
     }
 
@@ -144,11 +130,17 @@ class Main extends PluginBase
             mkdir($dataPath);
         }
 
-        $this->saveResource("Config.yml", false);
-        $this->saveResource("Language.yml", false);
+        $this->saveResources();
         $this->config = new Config($this->getDataFolder() . "Config.yml", Config::YAML);
         $this->lang = new Config($this->getDataFolder() . "Language.yml", Config::YAML);
         $this->api = new API($this);
+    }
+
+    private function saveResources(): void
+    {
+        foreach ($this->getResources() as $resource) {
+            $this->saveResource($resource->getFilename(), true);
+        }
     }
 
     /**

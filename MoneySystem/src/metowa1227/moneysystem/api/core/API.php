@@ -6,7 +6,7 @@ use pocketmine\utils\Config;
 use pocketmine\Server;
 use pocketmine\Player;
 use metowa1227\moneysystem\Main;
-use metowa1227\moneysystem\api\listener\Listener;
+use metowa1227\moneysystem\api\MoneySystemAPI;
 use metowa1227\moneysystem\api\traits\GetNameTrait;
 use metowa1227\moneysystem\api\traits\CheckMoneyTrait;
 use metowa1227\moneysystem\event\money\MoneyChangeEvent;
@@ -18,7 +18,7 @@ use metowa1227\moneysystem\event\money\MoneySetEvent;
  * MoneySystem のAPIクラスです
  * プラグイン類はこのクラスへアクセスします
  */
-class API implements Listener
+class API implements MoneySystemAPI
 {
     use GetNameTrait, CheckMoneyTrait;
 
@@ -78,22 +78,25 @@ class API implements Listener
 
     /**
      * 言語データベースから指定されたキーの文章を取得する
-     * [サードパーティー製プラグインからの呼び出しは非推奨]
      *
      * @param string $key  文章のキー
      * @param array  $input 文章中のシンボルと差し替えるデータ(存在する場合)
+     * @param array  $langDataBase 言語データベース
      * @return string 文章
      */
-    public function getMessage(string $key, array $input = []): string
+    public function getMessage(string $key, array $input = [], array $langDataBase = []): string
     {
+        if (count($langDataBase) <= 0) {
+            $langDataBase = $this->langArray;
+        }
+
         // キーが存在しない場合、エラー文章を返します
-        if (!$this->lang->exists($key)) {
-            return TextFormat::RED . "The character string \"" . TextFormat::YELLOW . $key . TextFormat::RED
-            . "\" could not be found from the search result database.";
+        if (!isset($langDataBase[$key])) {
+            return TextFormat::RED . "[MoneySystem] The character string \"" . TextFormat::YELLOW . $key . TextFormat::RED . "\" could not be found from the search result database.";
         }
         
         // 改行と色データを適用
-        $message = str_replace(["[EOLL]", "[EOL]"], ["\n", "\n" . str_pad(" ", 33)], $this->langArray[$key]);
+        $message = str_replace(["[EOLL]", "[EOL]"], ["\n", "\n" . str_pad(" ", 33)], $langDataBase[$key]);
         $message = str_replace(self::colorTag, self::color, $message);
 
         // 文章中のシンボルとインプットされたデータを差し替える
@@ -107,6 +110,16 @@ class API implements Listener
         }
 
         return $message;
+    }
+
+    public function __get($player): ?int
+    {
+        return $this->get($player);
+    }
+
+    public function __set($player, $value): bool
+    {
+        return $this->set($player, $value);
     }
 
     /**
@@ -125,7 +138,7 @@ class API implements Listener
      * @param string|Player $player
      * @return null|int
      */
-    public function get($player)
+    public function get($player): ?int
     {
         $this->getName($player);
         if (!$this->exists($player)) {
@@ -369,11 +382,11 @@ class API implements Listener
     /**
      * MoneySystemのバージョン情報を取得する
      *
-     * @return float
+     * @return string
     */
-    public function getVersion(): float
+    public function getVersion(): string
     {
-        return Main::PLUGIN_VERSION;
+        return $this->mainSystem->getDescription()->getVersion();
     }
 
     /**

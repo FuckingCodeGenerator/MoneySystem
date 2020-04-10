@@ -1,21 +1,6 @@
 name: MoneySystemLand
-main: metowa1227\MoneySystemLand\MoneySystemLand
-version: 0.1.3
-api: 3.2.2
+main: metowa1227\msland\Main
+version: 0.2.0
+api: 3.11.3
 author: metowa1227
-commands:
-  land:
-    description: MoneySystemLand's master coommand.
-    usage: /land
-  s:
-    description: Set the first position.
-    usage: /s
-  e:
-    description: Set the second position.
-    usage: /e
-  ltp:
-    description: Teleport to the designated land.
-    usage: /ltp <ID>
-  here:
-    description: Examine the land information on the standing place.
-    usage: /here
+website: https://github.com/FuckingCodeGenerator/MoneySystem

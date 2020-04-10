@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
-namespace metowa1227\moneysystem\api\listener;
+namespace metowa1227\moneysystem\api;
 
 use pocketmine\utils\TextFormat;
 
-interface Listener
+interface MoneySystemAPI
 {
     /**
      * 所持金操作の種類を表します
@@ -84,7 +84,7 @@ interface Listener
     /**
      *  @return  Returns MoneySystem version.
      */
-    public function getVersion(): float;
+    public function getVersion(): string;
 
     /**
      *  @return  Acquires the default holding money and returns it.
@@ -117,6 +117,10 @@ interface Listener
      *  @return boolean  Returns true if the account exists, false if it does not exist.
      */
     public function exists($player): bool;
+
+    public function __get($player): ?int;
+
+    public function __set($player, $value): bool;
 
     /**
      * 言語データベース用の色データ

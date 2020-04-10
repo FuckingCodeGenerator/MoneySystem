@@ -3,7 +3,6 @@ namespace metowa1227\moneysystem\command;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use metowa1227\moneysystem\api\core\API;
 
 /**

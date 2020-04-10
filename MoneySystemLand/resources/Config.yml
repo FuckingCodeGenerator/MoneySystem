@@ -1,38 +1,30 @@
-The MoneySystemLand and Other systems and MoneySystemAPI and other third party MoneySystem's was made by metowa1227. (c) 2018 metowa1227.: true
+##土地のデフォルトの金額 (The price of the world for which the custom price is not set)
+default-price: 150
 
-##Default price per block (The price of the world for which the custom price is not set)
-price: 150
+##土地を識別する際に、Y座標も含める
+enable-3d-judge: false
+##高さ1ブロックごとの値段
+price-per-height-block: 50
 
-##Price by world (Writing (world name: price))
-customPriceDescription: "Price by world (Writing (world name: price))"
-customPrice: [
-  world: 150,
-  world2: 200
-]
+##LandParticleコマンドの有効化
+enable-landparticle-command: true
 
-##World where land protection is impossible
-disable-levels:
- - world3
- - world4
- - world5
+##ワールド別の土地の金額 (Writing (world name: price))
+custom-price: []
 
-##The maximum number of land that a player can possess (-1 unlimited)
+##土地保護ができないワールド
+impossible-protection: []
+
+##個人が所有できる最大土地数 (-1 unlimited)
 limit: 5
 
-##Not checking the world
-free:
- - world6
- - world7
- - world8
+##所有していない土地でも編集できるようにするワールド
+freely-editable-world: []
 
-##Whether to activate Teleport (true = enable | false = disable)
+##土地にテレポートできる機能 (true = enable | false = disable)
 teleport: true
-teleportOpOnly: false
+##OPのみ可能
+teleport-only-op-allowed: false
 
-##Do not edit this value
+##この値は変更しないでください
 id: 1
-idDescription: "Do not edit this value!"
-
-##Do not edit this value
-counter: 1
-counterDescription: (Very important) Do not edit this value!
