@@ -4,7 +4,6 @@ namespace metowa1227\msland\teleport;
 use pocketmine\Player;
 use pocketmine\block\Block;
 use pocketmine\level\Position;
-use pocketmine\level\Level;
 use metowa1227\msland\land\LandManager;
 use metowa1227\msland\Main;
 

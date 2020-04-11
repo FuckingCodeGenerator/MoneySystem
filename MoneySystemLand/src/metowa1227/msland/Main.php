@@ -11,12 +11,7 @@ use pocketmine\level\Position;
 use pocketmine\level\Level;
 use pocketmine\utils\TextFormat;
 use metowa1227\moneysystem\api\core\API;
-use metowa1227\msland\commands\LandCommand;
-use metowa1227\msland\commands\FirstPosSetCommand;
-use metowa1227\msland\commands\HereCommand;
 use metowa1227\msland\commands\LandParticleCommand;
-use metowa1227\msland\commands\SecondPosSetCommand;
-use metowa1227\msland\commands\TeleportCommand;
 use metowa1227\msland\event\PlayerLandEditEvent;
 use metowa1227\msland\land\LandManager;
 
@@ -148,24 +143,22 @@ class Main extends PluginBase
      *
      * @return void
      */
+    private $commands = [
+        "metowa1227\msland\commands\LandCommand",
+        "metowa1227\msland\commands\FirstPosSetCommand",
+        "metowa1227\msland\commands\HereCommand",
+        "metowa1227\msland\commands\SecondPosSetCommand",
+        "metowa1227\msland\commands\TeleportCommand",
+    ];
     private function registerCommands(): void
     {
-        $cmap = $this->getServer()->getCommandMap();
-
-        // メインメニューUIを展開
-        $cmap->register("land", new LandCommand($this));
-        // 最初の地点を設定
-        $cmap->register("fp", new FirstPosSetCommand($this));
-        // 次の地点を設定
-        $cmap->register("sp", new SecondPosSetCommand($this));
-        // Here コマンド
-        $cmap->register("here", new HereCommand($this));
-        // LTP コマンド
-        $cmap->register("ltp", new TeleportCommand($this));
+        foreach ($this->commands as $command) {
+            $this->getServer()->getCommandMap()->register($this->getName(), new $command($this));
+        }
 
         if ($this->config["enable-landparticle-command"]) {
             // LandParticle コマンド
-            $cmap->register("landparticle", new LandParticleCommand);
+            $this->getServer()->getCommandMap()->register("landparticle", new LandParticleCommand);
         }
     }
 

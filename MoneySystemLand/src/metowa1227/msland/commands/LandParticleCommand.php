@@ -30,7 +30,7 @@ class LandParticleCommand extends Command
 
     public function execute(CommandSender $sender, string $label, array $args): bool
     {
-        if (!$sender instanceof Player) {
+        if (!Main::isPlayer($sender)) {
             $sender->sendMessage(Main::getMessage("in-game-only"));
             return false;
         }

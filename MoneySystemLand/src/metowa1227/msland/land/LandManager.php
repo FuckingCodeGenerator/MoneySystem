@@ -299,33 +299,6 @@ class LandManager
     }
 
     /**
-     * 土地を編集できるか
-     *
-     * @param Position $pos
-     * @param Player $player
-     * @return boolean
-     */
-    public function canEdit(Position $pos, Player $player): bool
-    {
-        // 誰も座標のある土地を購入していない場合
-        if (($land = $this->getLandByPosition($pos)) === null) {
-            // コンフィグで"free"に登録されているワールドかどうか
-            if (in_array($pos->getLevel()->getFolderName(), $this->owner->getConfigArgs()["free"])) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            // 土地の所有者、または招待者かどうか
-            if ($this->isOwner($land, $player) || $this->isInvitee($land, $player)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * 土地の中に誰かが所有している土地があるか
      *
      * @param Position $firstPos
