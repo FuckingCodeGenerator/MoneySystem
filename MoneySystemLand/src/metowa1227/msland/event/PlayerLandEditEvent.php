@@ -48,6 +48,9 @@ class PlayerLandEditEvent implements Listener
                 return false;
             }
         } else {
+            if ($landManager->isPublicPlace($land[LandManager::ID])) {
+                return true;
+            }
             if ($land[LandManager::Owner] !== $player->getName()) {
                 if (!in_array($player->getName(), $land[LandManager::Invitee])) {
                     $player->sendPopup(Main::getMessage("land-has-been-purchased", [$land[LandManager::Owner], $land[LandManager::ID]]));

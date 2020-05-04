@@ -230,9 +230,8 @@ class Main extends PluginBase
         $updated = 0;
         $lands = $this->landManager->getLandData();
         foreach ($lands as $land) {
-            if (!isset($land[LandManager::StartY]) || !isset($land[LandManager::EndY])) {
-                $land[LandManager::StartY] = 0;
-                $land[LandManager::EndY] = Level::Y_MAX;
+            if (!isset($land[LandManager::IsPublic])) {
+                $land[LandManager::IsPublic] = false;
                 $lands[$land[LandManager::ID]] = $land;
                 $updated++;
             }

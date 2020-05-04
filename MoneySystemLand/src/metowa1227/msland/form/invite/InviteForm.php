@@ -15,6 +15,7 @@ class InviteForm
     private const INVITE_MENU_ADD = "invite-menu-add"; 
     private const INVITE_MENU_REMOVE = "invite-menu-remove";
     private const INVITE_MENU_LIST = "invite-menu-list";
+    private const INVITE_MENU_PUBLICPLACE = "invite-menu-publicplace";
 
     public static function getFunc(): callable
     {
@@ -31,6 +32,7 @@ class InviteForm
             $form->addButton(Main::getMessage(self::INVITE_MENU_ADD));
             $form->addButton(Main::getMessage(self::INVITE_MENU_REMOVE));
             $form->addButton(Main::getMessage(self::INVITE_MENU_LIST));
+            $form->addButton(Main::getMessage(self::INVITE_MENU_PUBLICPLACE));
             $form->sendToPlayer($player);
         };
     }
@@ -66,6 +68,15 @@ class InviteForm
                         $form->addButton($invitee);
                     }
 
+                    $form->sendToPlayer($player);
+                break;
+                // 公共の土地
+                case 3:
+                    $form = new ModalForm(self::getFunc6($landId));
+                    $form->setTitle("Public Place");
+                    $form->setContent(Main::getMessage("invite-public-content", [$landId]));
+                    $form->setButton1(Main::getMessage("yes"));
+                    $form->setButton2(Main::getMessage("no"));
                     $form->sendToPlayer($player);
                 break;
             }
@@ -121,6 +132,7 @@ class InviteForm
             }
         };
     }
+
     private static function getFunc5(int $landId, array $invitees): callable
     {
         return function (Player $player, ?int $data) use ($landId, $invitees) {
@@ -131,6 +143,15 @@ class InviteForm
             $selected = $invitees[$data];
             $callable = self::getFunc3($landId, self::INVITE_MENU_REMOVE);
             $callable($player, $selected);
+        };
+    }
+
+    private static function getFunc6(int $landId): callable
+    {
+        return function (Player $player, bool $data) use ($landId) {
+            $str = $data ? "有効" : "無効";
+            Main::getInstance()->getLandManager()->setPublicPlace($landId, $data);
+            $player->sendMessage(Main::getMessage("invite-public-success", [$landId, $str]));
         };
     }
 }

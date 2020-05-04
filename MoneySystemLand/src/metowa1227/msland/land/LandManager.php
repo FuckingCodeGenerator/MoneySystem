@@ -43,6 +43,7 @@ class LandManager
     public const Owner = "owner";
     public const Level = "level";
     public const Invitee = "invitee";
+    public const IsPublic = "publicPlace";
 
     /**
      * @param Main $owner
@@ -392,7 +393,8 @@ class LandManager
             self::Price => $price,
             self::Owner => $player->getName(),
             self::Level => $level->getFolderName(),
-            self::Invitee => []
+            self::Invitee => [],
+            self::IsPublic => false
         ];
         $this->lands[$landId] = $landData;
         $this->owner->updateLandId(++$landId);
@@ -411,5 +413,28 @@ class LandManager
         $land = $this->getLandById($landId);
         $land[self::Owner] = $newOwner;
         $this->lands[$landId] = $land;
+    }
+
+    /**
+     * 公共の土地か
+     *
+     * @param integer $landId
+     * @return boolean
+     */
+    public function isPublicPlace(int $landId): bool
+    {
+        return $this->getLandById($landId)[self::IsPublic];
+    }
+
+    /**
+     * 土地を公共の土地にするかを設定
+     *
+     * @param integer $landId
+     * @param boolean $value
+     * @return void
+     */
+    public function setPublicPlace(int $landId, bool $value): void
+    {
+        $this->lands[$landId][self::IsPublic] = $value;
     }
 }
