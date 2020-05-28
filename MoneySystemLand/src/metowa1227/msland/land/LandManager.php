@@ -267,7 +267,9 @@ class LandManager
             if ((new AxisAlignedBB(
                 $vec[self::X_MIN], $vec[self::Y_MIN], $vec[self::Z_MIN],
                 $vec[self::X_MAX], $vec[self::Y_MAX], $vec[self::Z_MAX]))->isVectorInside($pos)) {
-                return $land;
+                    if ($pos->getLevel()->getFolderName() === $land[LandManager::Level]) {
+                        return $land;
+                    }
             }
         }
 
