@@ -232,9 +232,14 @@ class Main extends PluginBase
         foreach ($lands as $land) {
             if (!isset($land[LandManager::IsPublic])) {
                 $land[LandManager::IsPublic] = false;
-                $lands[$land[LandManager::ID]] = $land;
                 $updated++;
             }
+            if (!isset($land[LandManager::StartY])) {
+                $land[LandManager::StartY] = 0;
+                $land[LandManager::EndY] = Level::Y_MAX;
+                $updated++;
+            }
+            $lands[$land[LandManager::ID]] = $land;
         }
 
         $this->landManager->updateLandData($this, $lands);
