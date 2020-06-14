@@ -4,6 +4,7 @@ namespace metowa1227\moneysystem;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use metowa1227\moneysystem\api\core\API;
+use metowa1227\moneysystem\command\money\MoneyCommand;
 use metowa1227\moneysystem\command\SystemCommand;
 use metowa1227\moneysystem\event\player\JoinEvent;
 use metowa1227\moneysystem\task\SaveTask;
@@ -44,6 +45,14 @@ class Main extends PluginBase
         // 自動セーブのタスクを起動します
         $this->startTask();
 
+        // Debug code
+        /*
+        for ($i = 0; $i < 9999; $i++) {
+            $this->getAPI()->createAccount($i, mt_rand(1, self::MAX_MONEY));
+            $this->getLogger()->debug("Created an account: " . $i . " with " . $this->getAPI()->get($i));
+        }
+        */
+        
         $this->getLogger()->info($this->api->getMessage("system.startup-compleate", array($this->getDescription()->getVersion())));
     }
 
@@ -139,7 +148,7 @@ class Main extends PluginBase
     private function saveResources(): void
     {
         foreach ($this->getResources() as $resource) {
-            $this->saveResource($resource->getFilename(), true);
+            $this->saveResource($resource->getFilename(), false);
         }
     }
 
@@ -150,8 +159,8 @@ class Main extends PluginBase
     */
     private function registerCommand(): void
     {
-        // '/moneysystem' コマンド
         $this->getServer()->getCommandMap()->register("moneysystem", new SystemCommand);
+        $this->getServer()->getCommandMap()->register("money", new MoneyCommand);
     }
 
     /**

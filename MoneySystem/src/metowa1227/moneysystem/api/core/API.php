@@ -73,6 +73,11 @@ class API implements MoneySystemAPI
         $this->accountDataArray = $this->dataFile->getAll();
         $this->langArray = $this->lang->getAll();
 
+        // CONSOLE の所持金を初期化
+        if (!$this->createAccount("CONSOLE", Main::MAX_MONEY)) {
+            $this->set("CONSOLE", Main::MAX_MONEY);
+        }
+
         self::$instance = $this;
     }
 
@@ -158,12 +163,15 @@ class API implements MoneySystemAPI
         // GetNameTrait
         $this->getName($player);
 
+        $result = $this->accountDataArray;
+        unset($result["CONSOLE"]);
+
         // プレイヤー名のみ返す
         if ($key) {
-            return array_keys($this->accountDataArray);
+            return array_keys($result);
         }
 
-        return $this->accountDataArray;
+        return $result;
     }
 
     /**
@@ -226,6 +234,10 @@ class API implements MoneySystemAPI
             // GetNameTrait
             $this->getName($player);
 
+            if ($player === "CONSOLE") {
+                return true;
+            }
+
             // アカウントが存在しない場合
             if (!$this->exists($player)) {
                 return false;
@@ -266,6 +278,10 @@ class API implements MoneySystemAPI
         } else {
             // GetNameTrait
             $this->getName($player);
+
+            if ($player === "CONSOLE") {
+                return true;
+            }
 
             // アカウントが存在しない場合
             if (!$this->exists($player)) {
@@ -311,6 +327,10 @@ class API implements MoneySystemAPI
         } else {
             // GetNameTrait
             $this->getName($player);
+
+            if ($player === "CONSOLE") {
+                return true;
+            }
 
             // アカウントが存在しない場合
             if (!$this->exists($player)) {
@@ -433,6 +453,8 @@ class API implements MoneySystemAPI
         // アカウントが存在しない場合に作成
         if (!$this->exists($player)) {
             $this->accountDataArray[$player] = $money;
+        } else {
+            return false;
         }
 
         return true;

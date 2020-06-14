@@ -12,6 +12,21 @@ command.system-guide-2: MoneySystem は日本の中学生によって開発さ�
 command.system-guide-3: ライセンス LGPL-3.0
 command.system-guide-4: /// 2016 metowa1227 ///
 
+command.money.error.target-not-found: "[TAG: NO.0] のアカウントが見つかりません"
+command.money.error.amount-must-be-integer: "[COLOR: YELLOW]金額は整数である必要があります"
+command.money.error.input-must-be-integer: "[COLOR: YELLOW]入力データは整数である必要があります"
+command.money.error.amount-less-than-zero: "[COLOR: YELLOW]金額は0以上でなければなりません"
+command.money.error.lack-of-money: "[COLOR: YELLOW]所持金が不足しています"
+command.money.error: "[COLOR: RED]不明なエラーが発生しました"
+command.money.see.your-money.result: "現在の所持金: [TAG: NO.0][TAG: NO.1]"
+command.money.see.result: "[TAG: NO.0] の所持金: [TAG: NO.1][TAG: NO.2]"
+command.money.pay.succeed.sender: "[TAG: NO.0]に[TAG: NO.1][TAG: NO.2]を送金しました"
+command.money.pay.succeed.target: "[COLOR: GREEN][TAG: NO.0]より[TAG: NO.1][TAG: NO.2]を受領しました"
+command.money.status.result: "あなたのステータス: [TAG: NO.0]％"
+command.money.take.succeed.sender: "[TAG: NO.0]の所持金を[TAG: NO.1][TAG: NO.2]減少させました"
+command.money.give.succeed.sender: "[TAG: NO.0]の所持金を[TAG: NO.1][TAG: NO.2]増加させました"
+command.money.set.succeed.sender: "[TAG: NO.0]の所持金を[TAG: NO.1][TAG: NO.2]に設定しました"
+
 autosave-start: 自動セーブを開始します。
 autosave-success: 自動セーブが完了しました。
 autosave-failed: 自動セーブに失敗しました。
