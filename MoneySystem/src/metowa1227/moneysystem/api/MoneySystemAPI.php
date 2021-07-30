@@ -120,7 +120,7 @@ interface MoneySystemAPI
 
     public function __get($player): ?int;
 
-    public function __set($player, $value): bool;
+    public function __set($player, $value);
 
     /**
      * 言語データベース用の色データ

@@ -122,9 +122,9 @@ class API implements MoneySystemAPI
         return $this->get($player);
     }
 
-    public function __set($player, $value): bool
+    public function __set($player, $value)
     {
-        return $this->set($player, $value);
+        $this->set($player, $value);
     }
 
     /**
